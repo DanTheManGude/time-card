@@ -2,13 +2,13 @@
 
 import { Stack } from "@mui/material";
 
-import { withDays } from "./WithDays";
+import { withPayPeriod } from "./WithPayPeriod";
 
 function renderDay(day: Day) {
-  return day.date.toLocaleString();
+  return day.date.toLocaleDateString();
 }
 
-function Title(props: WithDaysProps) {
+function Main(props: WithPayPeriodProps) {
   const { days } = props;
 
   return (
@@ -18,4 +18,4 @@ function Title(props: WithDaysProps) {
   );
 }
 
-export default withDays(Title);
+export default withPayPeriod(Main);

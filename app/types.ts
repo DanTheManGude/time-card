@@ -2,7 +2,11 @@ type Day = {
   date: Date;
 };
 
-interface WithDaysProps {
+type PayPeriod = {
+  days: Day[];
+};
+
+interface WithPayPeriodProps {
   days: Day[];
   updateDay: (newDay: Day) => void;
 }

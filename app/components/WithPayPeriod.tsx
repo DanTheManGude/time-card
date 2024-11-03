@@ -2,20 +2,24 @@
 
 import { useEffect, useState } from "react";
 
-type PayPeriod = {};
-
-function saveDays(days: Day[]) {}
-
-function loadDays(): Day[] {
-  return [];
+function savePayPeriod(payPeriod: PayPeriod) {
+  console.log(payPeriod);
 }
 
-export function withDays(WrappedComponent: React.ComponentType<WithDaysProps>) {
+function loadPayPeriod(): PayPeriod {
+  return { days: [{ date: new Date() }] };
+}
+
+export function withPayPeriod(
+  WrappedComponent: React.ComponentType<WithPayPeriodProps>
+) {
+  const payPeriod = loadPayPeriod();
+
   const ComponentWithTheme = () => {
-    const [days, setDays] = useState<Day[]>(loadDays());
+    const [days, setDays] = useState<Day[]>(payPeriod.days);
 
     useEffect(() => {
-      saveDays(days);
+      savePayPeriod({ ...payPeriod, days });
     }, [days]);
 
     const updateDay = (newDay: Day) => {
