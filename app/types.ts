@@ -4,6 +4,7 @@ type Day = {
 
 type PayPeriod = {
   days: Day[];
+  lastDate: Date;
 };
 
 interface WithPayPeriodProps {

@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-function savePayPeriod(payPeriod: PayPeriod) {
-  console.log(payPeriod);
-}
-
-function loadPayPeriod(): PayPeriod {
-  return { days: [{ date: new Date() }] };
-}
+import { loadPayPeriod, savePayPeriod } from "../utility";
 
 export function withPayPeriod(
   WrappedComponent: React.ComponentType<WithPayPeriodProps>
