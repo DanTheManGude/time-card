@@ -1,5 +1,7 @@
 type Day = {
   date: Date;
+  actualQuarterHours?: number;
+  estimatedQuarterHours: number;
 };
 
 type PayPeriod = {
@@ -11,3 +13,8 @@ interface WithPayPeriodProps {
   days: Day[];
   updateDay: (newDay: Day) => void;
 }
+
+type Holiday = {
+  month: number;
+  day: number;
+};
