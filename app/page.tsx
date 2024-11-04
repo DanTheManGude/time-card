@@ -1,13 +1,14 @@
-import Container from "@mui/material/Container";
+import { Container, Typography } from "@mui/material";
 
-import Title from "./components/Title";
-import Main from "./components/Main";
+import Body from "./Components/Body";
 
 export default function Page() {
   return (
     <Container sx={{ paddingTop: 2 }}>
-      <Title />
-      <Main />
+      <Typography variant="h3" textAlign={"center"}>
+        Time Card
+      </Typography>
+      <Body />
     </Container>
   );
 }
