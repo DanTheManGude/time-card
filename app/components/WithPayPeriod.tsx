@@ -9,7 +9,7 @@ export function withPayPeriod(
 ) {
   const ComponentWithTheme = () => {
     const [payPeriod, setPayPeriod] = useState<PayPeriod | null>(null);
-    const [loaded, setLoaded] = useState<Boolean>(false);
+    const [loaded, setLoaded] = useState<boolean>(false);
 
     useEffect(() => {
       try {

@@ -51,8 +51,8 @@ function calculateHolidaysForMonth(targetMonth: number): number[] {
 }
 
 function getFirstAndLastDays(today: Date) {
-  var firstDate;
-  var lastDate;
+  let firstDate;
+  let lastDate;
 
   if (today.getDate() <= 15) {
     firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -97,7 +97,7 @@ export function constructNewPayPeriod(): PayPeriod {
 
   const holidays = calculateHolidaysForMonth(firstDate.getMonth());
 
-  var currentDate = firstDate;
+  const currentDate = new Date(firstDate);
   const incrementCurrentDate = () => {
     currentDate.setDate(currentDate.getDate() + 1);
   };

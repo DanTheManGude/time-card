@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 type Modify<T, R> = Omit<T, keyof R> & R;
 
 type Day = {
