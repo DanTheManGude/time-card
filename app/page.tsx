@@ -1,6 +1,6 @@
 import { Container, Typography } from "@mui/material";
 
-import Body from "./Components/Body";
+import Body from "./components/main";
 
 export default function Page() {
   return (

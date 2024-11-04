@@ -1,8 +1,7 @@
 "use client";
 
 import { Stack, Typography } from "@mui/material";
-
-import withPayPeriod from "./WithPayPeriod";
+import withPayPeriod from "./withPayPeriod";
 
 function renderDay(day: Day) {
   return (
