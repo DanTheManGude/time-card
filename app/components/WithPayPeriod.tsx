@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { constructNewPayPeriod, recalculatePayPeriod } from "../utility";
 import { LOCAL_STORAGE_KEY } from "../constants";
 
-export function withPayPeriod(
+export default function withPayPeriod(
   WrappedComponent: React.ComponentType<WithPayPeriodProps>
 ) {
   const ComponentWithTheme = () => {

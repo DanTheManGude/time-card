@@ -2,7 +2,7 @@
 
 import { Stack, Typography } from "@mui/material";
 
-import { withPayPeriod } from "./WithPayPeriod";
+import withPayPeriod from "./WithPayPeriod";
 
 function renderDay(day: Day) {
   return (
