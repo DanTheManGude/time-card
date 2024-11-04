@@ -1,11 +1,15 @@
 "use client";
 
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 import { withPayPeriod } from "./WithPayPeriod";
 
 function renderDay(day: Day) {
-  return day.date.toLocaleDateString();
+  return (
+    <Typography key={day.date.getDate()}>
+      {day.date.toLocaleDateString()}
+    </Typography>
+  );
 }
 
 function Main(props: WithPayPeriodProps) {

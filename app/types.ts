@@ -1,3 +1,5 @@
+type Modify<T, R> = Omit<T, keyof R> & R;
+
 type Day = {
   date: Date;
   actualQuarterHours?: number;
@@ -7,7 +9,21 @@ type Day = {
 type PayPeriod = {
   days: Day[];
   lastDate: Date;
+  quaterHourDifference: number;
 };
+
+type ParsedSavedPayPeriod = Modify<
+  PayPeriod,
+  {
+    days: Modify<
+      Day,
+      {
+        date: string;
+      }
+    >[];
+    lastDate: string;
+  }
+>;
 
 interface WithPayPeriodProps {
   payPeriod: PayPeriod;

@@ -16,7 +16,24 @@ export function withPayPeriod(
         const maybeSavedPayPeriodRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
 
         if (maybeSavedPayPeriodRaw) {
-          setPayPeriod(JSON.parse(maybeSavedPayPeriodRaw));
+          const parsedSavedPayPeriod: ParsedSavedPayPeriod = JSON.parse(
+            maybeSavedPayPeriodRaw
+          );
+
+          const convertedLastDate = new Date(parsedSavedPayPeriod.lastDate);
+          const dayAfterLast = new Date(convertedLastDate);
+          dayAfterLast.setDate(convertedLastDate.getDate() + 1);
+
+          if (dayAfterLast > new Date()) {
+            setPayPeriod({
+              ...parsedSavedPayPeriod,
+              days: parsedSavedPayPeriod.days.map((savedDay) => ({
+                ...savedDay,
+                date: new Date(savedDay.date),
+              })),
+              lastDate: convertedLastDate,
+            });
+          }
         }
       } catch (error) {
         console.error(error);

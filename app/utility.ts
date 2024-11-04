@@ -12,7 +12,7 @@ import {
 function isWeekday(date: Date) {
   const dayOfWeek = date.getDay();
 
-  return dayOfWeek === SUNDAY || dayOfWeek === SATURDAY;
+  return !(dayOfWeek === SUNDAY || dayOfWeek === SATURDAY);
 }
 
 function calculateRelativeHoliday(
@@ -84,14 +84,13 @@ function getFirstAndLastDays(today: Date) {
   return { firstDate, lastDate };
 }
 
-const getEstimatedHoursForDay = (date: Date) =>
-  date.getDay() === FRIDAY
+const getEstimatedHoursForDay = (day: number) =>
+  day === FRIDAY
     ? FRIDAY_ESTIMATED_QUARTER_HOURS
     : NORMAL_ESTIMATED_QUARTER_HOURS;
 
 export function constructNewPayPeriod(): PayPeriod {
   console.log("creating new pay period");
-  debugger;
   const { firstDate, lastDate } = getFirstAndLastDays(new Date());
 
   const days: Day[] = [];
@@ -104,23 +103,21 @@ export function constructNewPayPeriod(): PayPeriod {
   };
 
   while (currentDate.getDate() <= lastDate.getDate()) {
-    if (!isWeekday(currentDate)) {
-      incrementCurrentDate();
-      continue;
+    if (isWeekday(currentDate)) {
+      if (holidays.includes(currentDate.getDate())) {
+        days.push({
+          date: new Date(currentDate),
+          estimatedQuarterHours: HOLIDAY_QUARTER_HOURS,
+          actualQuarterHours: HOLIDAY_QUARTER_HOURS,
+        });
+      } else {
+        days.push({
+          date: new Date(currentDate),
+          estimatedQuarterHours: getEstimatedHoursForDay(currentDate.getDate()),
+        });
+      }
     }
-
-    if (holidays.includes(currentDate.getDate())) {
-      days.push({
-        date: new Date(currentDate),
-        estimatedQuarterHours: HOLIDAY_QUARTER_HOURS,
-        actualQuarterHours: HOLIDAY_QUARTER_HOURS,
-      });
-    }
-
-    days.push({
-      date: new Date(currentDate),
-      estimatedQuarterHours: getEstimatedHoursForDay(currentDate),
-    });
+    incrementCurrentDate();
   }
 
   const lastDateInPayPeriod = days.at(-1)?.date;
@@ -128,7 +125,11 @@ export function constructNewPayPeriod(): PayPeriod {
     throw new Error("No Days in new pay period");
   }
 
-  return { days, lastDate: lastDateInPayPeriod };
+  return recalculatePayPeriod({
+    days,
+    lastDate: lastDateInPayPeriod,
+    quaterHourDifference: 0,
+  });
 }
 
 export function recalculatePayPeriod(
