@@ -90,7 +90,8 @@ const getEstimatedHoursForDay = (date: Date) =>
     ? FRIDAY_ESTIMATED_QUARTER_HOURS
     : NORMAL_ESTIMATED_QUARTER_HOURS;
 
-function constructNewPayPeriod(): PayPeriod {
+export function constructNewPayPeriod(): PayPeriod {
+  console.log("creating new pay period");
   const { firstDate, lastDate } = getFirstAndLastDays(new Date());
 
   const days: Day[] = [];
@@ -128,31 +129,4 @@ function constructNewPayPeriod(): PayPeriod {
   }
 
   return { days, lastDate: lastDateInPayPeriod };
-}
-
-export function savePayPeriod(payPeriod: PayPeriod) {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payPeriod));
-}
-
-export function loadPayPeriod(): PayPeriod {
-  const maybeSavedPayPeriodRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-  if (!maybeSavedPayPeriodRaw) {
-    return constructNewPayPeriod();
-  }
-
-  try {
-    const payPeriod: PayPeriod = JSON.parse(maybeSavedPayPeriodRaw);
-
-    const dateAfterLast = new Date(payPeriod.lastDate);
-    dateAfterLast.setDate(dateAfterLast.getDate() + 1);
-
-    if (dateAfterLast < new Date()) {
-      return constructNewPayPeriod();
-    }
-
-    return payPeriod;
-  } catch {
-    return constructNewPayPeriod();
-  }
 }

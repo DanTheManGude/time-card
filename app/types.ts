@@ -10,7 +10,7 @@ type PayPeriod = {
 };
 
 interface WithPayPeriodProps {
-  days: Day[];
+  payPeriod: PayPeriod;
   updateDay: (newDay: Day) => void;
 }
 

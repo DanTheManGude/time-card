@@ -9,7 +9,9 @@ function renderDay(day: Day) {
 }
 
 function Main(props: WithPayPeriodProps) {
-  const { days } = props;
+  const {
+    payPeriod: { days },
+  } = props;
 
   return (
     <Stack direction={"column"} width={"100%"} paddingY={3} spacing={2}>
