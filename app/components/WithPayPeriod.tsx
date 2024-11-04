@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { constructNewPayPeriod } from "../utility";
+import { constructNewPayPeriod, recalculatePayPeriod } from "../utility";
 import { LOCAL_STORAGE_KEY } from "../constants";
 
 export function withPayPeriod(
@@ -25,14 +25,6 @@ export function withPayPeriod(
       setLoaded(true);
     }, []);
 
-    const updateDays = (updater: (existingDays: Day[]) => Day[]) => {
-      setPayPeriod((existingPayPeriod) =>
-        existingPayPeriod
-          ? { ...existingPayPeriod, days: updater(existingPayPeriod.days) }
-          : null
-      );
-    };
-
     useEffect(() => {
       if (!loaded) {
         return;
@@ -55,7 +47,14 @@ export function withPayPeriod(
         (day) => day.date.getTime() === newDay.date.getTime()
       );
 
-      updateDays((existingDays) => existingDays.splice(index, 1, newDay));
+      setPayPeriod((existingPayPeriod) =>
+        existingPayPeriod
+          ? recalculatePayPeriod({
+              ...existingPayPeriod,
+              days: existingPayPeriod.days.splice(index, 1, newDay),
+            })
+          : null
+      );
     };
 
     if (!payPeriod) {

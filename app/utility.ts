@@ -6,7 +6,6 @@ import {
   FRIDAY_ESTIMATED_QUARTER_HOURS,
   HOLIDAY_QUARTER_HOURS,
   NORMAL_ESTIMATED_QUARTER_HOURS,
-  LOCAL_STORAGE_KEY,
   STATIC_HOLIDAYS,
 } from "./constants";
 
@@ -92,6 +91,7 @@ const getEstimatedHoursForDay = (date: Date) =>
 
 export function constructNewPayPeriod(): PayPeriod {
   console.log("creating new pay period");
+  debugger;
   const { firstDate, lastDate } = getFirstAndLastDays(new Date());
 
   const days: Day[] = [];
@@ -129,4 +129,10 @@ export function constructNewPayPeriod(): PayPeriod {
   }
 
   return { days, lastDate: lastDateInPayPeriod };
+}
+
+export function recalculatePayPeriod(
+  existingPayPeriodWithNewDay: PayPeriod
+): PayPeriod {
+  return existingPayPeriodWithNewDay;
 }
