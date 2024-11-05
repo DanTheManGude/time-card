@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { ThemeProvider } from "@mui/material/styles";
+
+import theme from "./theme";
+import "./globals.css";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export const metadata: Metadata = {
   title: "Time Card",
@@ -12,7 +18,14 @@ function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
+        </AppRouterCacheProvider>
+      </body>
     </html>
   );
 }
