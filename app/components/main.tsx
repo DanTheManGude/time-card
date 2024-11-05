@@ -1,6 +1,7 @@
 "use client";
 
 import { Stack, Typography } from "@mui/material";
+import withPayPeriod from "./withPayPeriod";
 
 function renderDay(day: Day) {
   return (
@@ -22,4 +23,4 @@ function Main(props: WithPayPeriodProps) {
   );
 }
 
-export default Main;
+export default withPayPeriod(Main);
