@@ -113,7 +113,7 @@ export function constructNewPayPeriod(): PayPeriod {
       } else {
         days.push({
           date: new Date(currentDate),
-          estimatedQuarterHours: getEstimatedHoursForDay(currentDate.getDate()),
+          estimatedQuarterHours: getEstimatedHoursForDay(currentDate.getDay()),
         });
       }
     }
