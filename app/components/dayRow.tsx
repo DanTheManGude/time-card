@@ -21,15 +21,19 @@ export default function DayRow(props: { day: Day }) {
   return (
     <Paper elevation={3} sx={{ paddingY: 1.5, paddingX: 1 }}>
       <Grid2 container spacing={2} alignItems="end">
-        <Grid2 size={5}>
+        <Grid2 size={4}>
           <Typography key={day.date.getDate()}>
-            {day.date.toLocaleDateString()}
+            {day.date.toLocaleDateString(undefined, {
+              month: "short",
+              day: "numeric",
+              weekday: "long",
+            })}
           </Typography>
         </Grid2>
-        <Grid2 size={3}>
+        <Grid2 size={4}>
           <Typography>{expectedHoursMessage}</Typography>
         </Grid2>
-        <Grid2 size={3}>
+        <Grid2 size={4}>
           <FormControl fullWidth>
             <InputLabel variant="standard" htmlFor={actualHoursLabel}>
               Actual
