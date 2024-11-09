@@ -141,6 +141,7 @@ export function recalculatePayPeriod(
 export function convertQuarterHoursToString(quarterHours: number) {
   const fullHours = Math.floor(quarterHours / 4);
   const remainingQuarters = quarterHours % 4;
+  const quarterHoursAsMinutes = String(remainingQuarters * 15).padStart(2, "0");
 
-  return `${fullHours}:${remainingQuarters * 15}`;
+  return `${fullHours}:${quarterHoursAsMinutes}`;
 }
