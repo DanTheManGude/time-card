@@ -11,7 +11,7 @@ type Day = {
 type PayPeriod = {
   days: Day[];
   lastDate: Date;
-  quaterHourDifference: number;
+  quarterHourDifference: number;
 };
 
 type ParsedSavedPayPeriod = Modify<

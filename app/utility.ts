@@ -128,7 +128,7 @@ export function constructNewPayPeriod(): PayPeriod {
   return recalculatePayPeriod({
     days,
     lastDate: lastDateInPayPeriod,
-    quaterHourDifference: 0,
+    quarterHourDifference: 0,
   });
 }
 
@@ -136,4 +136,11 @@ export function recalculatePayPeriod(
   existingPayPeriodWithNewDay: PayPeriod
 ): PayPeriod {
   return existingPayPeriodWithNewDay;
+}
+
+export function convertQuarterHoursToString(quarterHours: number) {
+  const fullHours = Math.floor(quarterHours / 4);
+  const remainingQuarters = quarterHours % 4;
+
+  return `${fullHours}:${remainingQuarters * 15}`;
 }

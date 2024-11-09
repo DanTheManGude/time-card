@@ -1,15 +1,8 @@
 "use client";
 
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import withPayPeriod from "./withPayPeriod";
-
-function renderDay(day: Day) {
-  return (
-    <Typography key={day.date.getDate()}>
-      {day.date.toLocaleDateString()}
-    </Typography>
-  );
-}
+import DayRow from "./dayRow";
 
 function Main(props: WithPayPeriodProps) {
   const {
@@ -18,7 +11,9 @@ function Main(props: WithPayPeriodProps) {
 
   return (
     <Stack direction={"column"} width={"100%"} paddingY={3} spacing={2}>
-      {days.map(renderDay)}
+      {days.map((day) => (
+        <DayRow day={day} key={`dayRowKey-${day.date.getTime()}`} />
+      ))}
     </Stack>
   );
 }
