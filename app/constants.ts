@@ -16,7 +16,7 @@ export const STATIC_HOLIDAYS: Holiday[] = [
 ];
 
 export const NORMAL_ESTIMATED_QUARTER_HOURS = 8.5 * 4;
-export const FRIDAY_ESTIMATED_QUARTER_HOURS = 8 * 4;
+export const FRIDAY_ESTIMATED_QUARTER_HOURS = 6 * 4;
 export const HOLIDAY_QUARTER_HOURS = 8 * 4;
 
 export const SUNDAY = 0;
@@ -26,3 +26,13 @@ export const WEDNESDAY = 3;
 export const THURSDAY = 4;
 export const FRIDAY = 5;
 export const SATURDAY = 6;
+
+export const weekDayTimePriority = [
+  WEDNESDAY,
+  MONDAY,
+  TUESDAY,
+  THURSDAY,
+].reduce<{ [key: number]: number }>(
+  (acc, weekDay, index) => ({ ...acc, [weekDay]: index }),
+  {}
+);

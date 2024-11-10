@@ -6,12 +6,25 @@ type Day = {
   date: Date;
   actualQuarterHours?: number;
   estimatedQuarterHours: number;
+  targetQuarterHours: number;
+  isHoliday: boolean;
+};
+
+type TimeDifference = {
+  target: number;
+  indexes: number[];
+};
+
+type TimeDifferences = {
+  add: TimeDifference[];
+  remove: TimeDifference[];
 };
 
 type PayPeriod = {
   days: Day[];
   lastDate: Date;
   quarterHourDifference: number;
+  timeDifferences: TimeDifferences;
 };
 
 type ParsedSavedPayPeriod = Modify<

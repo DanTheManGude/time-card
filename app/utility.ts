@@ -7,12 +7,17 @@ import {
   HOLIDAY_QUARTER_HOURS,
   NORMAL_ESTIMATED_QUARTER_HOURS,
   STATIC_HOLIDAYS,
+  weekDayTimePriority,
 } from "./constants";
 
 function isWeekday(date: Date) {
   const dayOfWeek = date.getDay();
 
   return !(dayOfWeek === SUNDAY || dayOfWeek === SATURDAY);
+}
+
+function isFriday(date: Date) {
+  return date.getDay() === FRIDAY;
 }
 
 function calculateRelativeHoliday(
@@ -89,6 +94,61 @@ const getEstimatedHoursForDay = (day: number) =>
     ? FRIDAY_ESTIMATED_QUARTER_HOURS
     : NORMAL_ESTIMATED_QUARTER_HOURS;
 
+function sortWeekDays(days: Day[], indexOffset: number): number[] {
+  return Array.from(days)
+    .filter((day) => !day.isHoliday)
+    .sort(
+      (dayA, dayB) =>
+        weekDayTimePriority[dayA.date.getDay()] -
+        weekDayTimePriority[dayB.date.getDay()]
+    )
+    .map(
+      (day) =>
+        days.findIndex((d) => d.date.getTime() === day.date.getTime()) +
+        indexOffset
+    );
+}
+
+function constructTimeDifferences(days: Day[]): TimeDifferences {
+  const sortedWeekDays: number[] = [];
+  const fridays: number[] = [];
+
+  let lastFridayIndex = -1;
+
+  while (true) {
+    const nextFridayIndex = days
+      .slice(lastFridayIndex + 1)
+      .findIndex((day) => isFriday(day.date));
+
+    if (nextFridayIndex === -1) {
+      break;
+    }
+
+    if (!days[nextFridayIndex].isHoliday) {
+      fridays.push(nextFridayIndex);
+    }
+
+    if (nextFridayIndex > 0) {
+      sortedWeekDays.push(
+        ...sortWeekDays(days.slice(0, nextFridayIndex), lastFridayIndex + 1)
+      );
+    }
+
+    lastFridayIndex = nextFridayIndex;
+  }
+
+  const add: TimeDifference[] = [
+    { target: 8 * 4, indexes: fridays },
+    { target: 10 * 4, indexes: sortedWeekDays },
+    { target: 10 * 4, indexes: fridays },
+  ];
+  const remove: TimeDifference[] = [
+    { target: 6 * 4, indexes: Array.from(sortedWeekDays).reverse() },
+  ];
+
+  return { add, remove };
+}
+
 export function constructNewPayPeriod(): PayPeriod {
   console.log("creating new pay period");
   const { firstDate, lastDate } = getFirstAndLastDays(new Date());
@@ -104,16 +164,21 @@ export function constructNewPayPeriod(): PayPeriod {
 
   while (currentDate.getDate() <= lastDate.getDate()) {
     if (isWeekday(currentDate)) {
+      const targetQuarterHours = getEstimatedHoursForDay(currentDate.getDay());
       if (holidays.includes(currentDate.getDate())) {
         days.push({
           date: new Date(currentDate),
           estimatedQuarterHours: HOLIDAY_QUARTER_HOURS,
           actualQuarterHours: HOLIDAY_QUARTER_HOURS,
+          targetQuarterHours,
+          isHoliday: true,
         });
       } else {
         days.push({
           date: new Date(currentDate),
-          estimatedQuarterHours: getEstimatedHoursForDay(currentDate.getDay()),
+          estimatedQuarterHours: targetQuarterHours,
+          targetQuarterHours,
+          isHoliday: false,
         });
       }
     }
@@ -125,17 +190,39 @@ export function constructNewPayPeriod(): PayPeriod {
     throw new Error("No Days in new pay period");
   }
 
+  const timeDifferences = constructTimeDifferences(days);
+
   return recalculatePayPeriod({
     days,
     lastDate: lastDateInPayPeriod,
     quarterHourDifference: 0,
+    timeDifferences,
   });
 }
-
 export function recalculatePayPeriod(
-  existingPayPeriodWithNewDay: PayPeriod
+  existingPayPeriodWithNewDays: PayPeriod
 ): PayPeriod {
-  return existingPayPeriodWithNewDay;
+  const requiredQuarterHours = existingPayPeriodWithNewDays.days.length * 8 * 4;
+  const workingQuarterHours = existingPayPeriodWithNewDays.days.reduce(
+    (acc, day) => acc + (day.actualQuarterHours || day.targetQuarterHours),
+    0
+  );
+  const quarterHourDifference = workingQuarterHours - requiredQuarterHours;
+
+  const modifiedDays = existingPayPeriodWithNewDays.days.map((day) => ({
+    ...day,
+    estimatedQuarterHours: day.actualQuarterHours || day.targetQuarterHours,
+  }));
+
+  if (quarterHourDifference > 0) {
+  } else if (quarterHourDifference < 0) {
+  }
+
+  return {
+    ...existingPayPeriodWithNewDays,
+    days: modifiedDays,
+    quarterHourDifference,
+  };
 }
 
 export function convertQuarterHoursToString(quarterHours: number) {

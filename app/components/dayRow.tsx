@@ -34,7 +34,7 @@ export default function DayRow(props: { day: Day }) {
           <Typography>{expectedHoursMessage}</Typography>
         </Grid2>
         <Grid2 size={4}>
-          <FormControl fullWidth>
+          <FormControl fullWidth disabled={day.isHoliday}>
             <InputLabel variant="standard" htmlFor={actualHoursLabel}>
               Actual
             </InputLabel>
