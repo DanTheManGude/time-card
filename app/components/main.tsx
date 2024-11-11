@@ -27,13 +27,13 @@ function Main(props: WithPayPeriodProps) {
 
   return (
     <Stack direction={"column"} width={"100%"} paddingY={3} spacing={2}>
-      {quarterHourDifference && (
+      {quarterHourDifference ? (
         <Typography>
           {`You are ${
             quarterHourDifference > 0 ? "ahead" : "behind"
           } by ${convertQuarterHoursToString(Math.abs(quarterHourDifference))}`}
         </Typography>
-      )}
+      ) : null}
       {days.map((day, index) => (
         <DayRow
           day={day}

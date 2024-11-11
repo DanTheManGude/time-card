@@ -237,7 +237,7 @@ function iterateHours(
     }
   }
 
-  return elapsedTimeChange;
+  return requiredTimeChange - elapsedTimeChange;
 }
 
 export function recalculatePayPeriod(

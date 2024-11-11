@@ -15,9 +15,19 @@ export default function DayRow(props: {
 }) {
   const { day, updateHours } = props;
 
-  const expectedHoursMessage = `Expected- ${convertQuarterHoursToString(
+  const quarterHourDifference =
+    day.targetQuarterHours -
+    (day.actualQuarterHours || day.estimatedQuarterHours);
+
+  const expectedHoursMessage = `${convertQuarterHoursToString(
     day.estimatedQuarterHours
-  )}`;
+  )}${
+    quarterHourDifference === 0
+      ? ""
+      : ` (${
+          quarterHourDifference > 0 ? "-" : "+"
+        }${convertQuarterHoursToString(Math.abs(quarterHourDifference))})`
+  }`;
 
   const actualHoursLabel = `actualHoursSelect-${day.date.getTime()}`;
 
