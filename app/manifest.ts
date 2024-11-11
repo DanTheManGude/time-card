@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Time Card App",
+    name: "Time Card",
     short_name: "Time Card",
     description: "Time Card estimates for pay period",
     start_url: "/",

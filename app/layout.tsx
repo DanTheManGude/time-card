@@ -7,12 +7,12 @@ import "./globals.css";
 import CssBaseline from "@mui/material/CssBaseline";
 
 export const metadata: Metadata = {
-  title: "Time Card App",
+  title: "Time Card",
   description: "Time Card estimates for pay period",
   openGraph: {
     type: "website",
     url: "https://timecard.dangude.com",
-    title: "Time Card App",
+    title: "Time Card",
     description: "Time Card estimates for pay period",
   },
 };
