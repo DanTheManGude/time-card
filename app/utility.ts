@@ -96,7 +96,7 @@ const getEstimatedHoursForDay = (day: number) =>
 
 function sortWeekDays(days: Day[], indexOffset: number): number[] {
   return Array.from(days)
-    .filter((day) => !day.isHoliday && !day.actualQuarterHours)
+    .filter((day) => !day.isHoliday)
     .sort(
       (dayA, dayB) =>
         weekDayTimePriority[dayA.date.getDay()] -
@@ -111,7 +111,7 @@ function sortWeekDays(days: Day[], indexOffset: number): number[] {
 
 function constructTimeDifferences(days: Day[]): TimeDifferences {
   const sortedWeekDays: number[] = [];
-  const fridays: number[] = [];
+  const orderedFridays: number[] = [];
 
   let lastFridayIndex = -1;
 
@@ -126,11 +126,8 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
 
     nextFridayIndex = nextFridayIndex + lastFridayIndex + 1;
 
-    if (
-      !days[nextFridayIndex].isHoliday &&
-      !days[nextFridayIndex].actualQuarterHours
-    ) {
-      fridays.push(nextFridayIndex);
+    if (!days[nextFridayIndex].isHoliday) {
+      orderedFridays.push(nextFridayIndex);
     }
 
     sortedWeekDays.push(
@@ -143,13 +140,18 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
     lastFridayIndex = nextFridayIndex;
   }
 
+  const reverseWeekDays = Array.from(sortedWeekDays).reverse();
+  const reverseFridays = Array.from(sortedWeekDays).reverse();
+
   const deficit: TimeDifference[] = [
-    { limit: 8 * 4, indexes: fridays },
+    { limit: 8 * 4, indexes: orderedFridays },
     { limit: 10 * 4, indexes: sortedWeekDays },
-    { limit: 10 * 4, indexes: fridays },
+    { limit: 10 * 4, indexes: orderedFridays },
+    { limit: 12 * 4, indexes: [...sortedWeekDays, ...orderedFridays] },
   ];
   const surplus: TimeDifference[] = [
-    { limit: 6 * 4, indexes: Array.from(sortedWeekDays).reverse() },
+    { limit: 6 * 4, indexes: reverseWeekDays },
+    { limit: 4 * 4, indexes: [...reverseFridays, ...reverseWeekDays] },
   ];
 
   return { deficit, surplus };
@@ -220,12 +222,13 @@ function iterateHours(
 
     while (!hasReachedLimit) {
       for (const index of indexes) {
+        if (days[index].actualQuarterHours) {
+          continue;
+        }
+
         const existingQuarterHours = days[index].estimatedQuarterHours;
 
-        if (
-          existingQuarterHours === limit ||
-          elapsedTimeChange === requiredTimeChange
-        ) {
+        if (existingQuarterHours === limit) {
           hasReachedLimit = true;
           break;
         }
@@ -233,11 +236,13 @@ function iterateHours(
         days[index].estimatedQuarterHours =
           existingQuarterHours + timeChangeValue;
         elapsedTimeChange = elapsedTimeChange - timeChangeValue;
+
+        if (elapsedTimeChange === requiredTimeChange) {
+          return;
+        }
       }
     }
   }
-
-  return requiredTimeChange - elapsedTimeChange;
 }
 
 export function recalculatePayPeriod(
@@ -267,7 +272,7 @@ export function recalculatePayPeriod(
       timeChangeValue = 1;
     }
 
-    quarterHourDifference = iterateHours(
+    iterateHours(
       modifiedDays,
       quarterHourDifference,
       timeDifferences,
