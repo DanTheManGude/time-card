@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography, TypographyProps } from "@mui/material";
 import { ContentCopyRounded } from "@mui/icons-material";
 
 import withPayPeriod from "./withPayPeriod";
@@ -25,19 +25,29 @@ function Main(props: WithPayPeriodProps) {
     [updateDay]
   );
 
+  const renderMessage = () => {
+    let color: TypographyProps["color"];
+    let message: string;
+
+    if (quarterHourDifference === 0) {
+      color = "info";
+      message = "You are on track.";
+    } else {
+      message = `You are ${
+        quarterHourDifference > 0 ? "ahead" : "behind"
+      } by ${convertQuarterHoursToString(Math.abs(quarterHourDifference))}`;
+    }
+
+    return (
+      <Typography textAlign="center" variant="h6" color={color}>
+        {message}
+      </Typography>
+    );
+  };
+
   return (
     <Stack direction={"column"} width={"100%"} paddingY={2} spacing={2}>
-      {quarterHourDifference ? (
-        <Typography
-          textAlign="center"
-          variant="h6"
-          color={quarterHourDifference > 0 ? "success" : "error"}
-        >
-          {`You are ${
-            quarterHourDifference > 0 ? "ahead" : "behind"
-          } by ${convertQuarterHoursToString(Math.abs(quarterHourDifference))}`}
-        </Typography>
-      ) : null}
+      {renderMessage()}
       {days.map((day, index) => (
         <DayRow
           day={day}
