@@ -44,7 +44,15 @@ export default function DayRow(props: {
           </Typography>
         </Grid2>
         <Grid2 size={4}>
-          <Typography color={quarterHourDifference > 0 ? "success" : "error"}>
+          <Typography
+            color={
+              quarterHourDifference === 0
+                ? undefined
+                : quarterHourDifference > 0
+                ? "success"
+                : "error"
+            }
+          >
             {expectedHoursMessage}
           </Typography>
         </Grid2>

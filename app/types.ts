@@ -42,7 +42,7 @@ type ParsedSavedPayPeriod = Modify<
 
 interface WithPayPeriodProps {
   payPeriod: PayPeriod;
-  updateDay: (newDay: Day, index: number) => void;
+  updateDay: (getNewDay: (existingDay: Day) => Day, index: number) => void;
 }
 
 type Holiday = {

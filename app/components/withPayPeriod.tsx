@@ -54,7 +54,7 @@ export default function withPayPeriod(
       }
     }, [payPeriod, loaded]);
 
-    const updateDay = (newDay: Day, index: number) => {
+    const updateDay = (getNewDay: (existingDay: Day) => Day, index: number) => {
       if (!payPeriod) {
         console.error("Updating day without pay period");
         return;
@@ -64,7 +64,10 @@ export default function withPayPeriod(
         existingPayPeriod
           ? recalculatePayPeriod({
               ...existingPayPeriod,
-              days: existingPayPeriod.days.with(index, newDay),
+              days: existingPayPeriod.days.with(
+                index,
+                getNewDay(existingPayPeriod.days[index])
+              ),
             })
           : null
       );
