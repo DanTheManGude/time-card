@@ -4,7 +4,6 @@ import {
   InputLabel,
   NativeSelect,
   Paper,
-  SelectChangeEvent,
   Typography,
 } from "@mui/material";
 import { convertQuarterHoursToString } from "../utility";

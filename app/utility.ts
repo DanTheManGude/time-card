@@ -116,13 +116,15 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   let lastFridayIndex = -1;
 
   while (true) {
-    const nextFridayIndex = days
+    let nextFridayIndex = days
       .slice(lastFridayIndex + 1)
       .findIndex((day) => isFriday(day.date));
 
     if (nextFridayIndex === -1) {
       break;
     }
+
+    nextFridayIndex = nextFridayIndex + lastFridayIndex + 1;
 
     if (
       !days[nextFridayIndex].isHoliday &&
@@ -131,11 +133,12 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
       fridays.push(nextFridayIndex);
     }
 
-    if (nextFridayIndex > 0) {
-      sortedWeekDays.push(
-        ...sortWeekDays(days.slice(0, nextFridayIndex), lastFridayIndex + 1)
-      );
-    }
+    sortedWeekDays.push(
+      ...sortWeekDays(
+        days.slice(lastFridayIndex + 1, nextFridayIndex),
+        lastFridayIndex + 1
+      )
+    );
 
     lastFridayIndex = nextFridayIndex;
   }
@@ -216,7 +219,7 @@ function iterateHours(
     let hasReachedLimit = false;
 
     while (!hasReachedLimit) {
-      for (const index in indexes) {
+      for (const index of indexes) {
         const existingQuarterHours = days[index].estimatedQuarterHours;
 
         if (
@@ -229,7 +232,7 @@ function iterateHours(
 
         days[index].estimatedQuarterHours =
           existingQuarterHours + timeChangeValue;
-        elapsedTimeChange = elapsedTimeChange + timeChangeValue;
+        elapsedTimeChange = elapsedTimeChange - timeChangeValue;
       }
     }
   }

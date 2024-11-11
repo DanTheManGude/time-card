@@ -14,10 +14,13 @@ function Main(props: WithPayPeriodProps) {
 
   const getUpdateDayActuaQuarterlHours = useCallback(
     (index: number) => (newActualQuarterHours: number) => {
-      updateDay({
-        ...days[index],
-        actualQuarterHours: newActualQuarterHours,
-      });
+      updateDay(
+        {
+          ...days[index],
+          actualQuarterHours: newActualQuarterHours,
+        },
+        index
+      );
     },
     [updateDay]
   );
