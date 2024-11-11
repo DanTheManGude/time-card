@@ -229,7 +229,7 @@ function iterateHours(
 
         days[index].estimatedQuarterHours =
           existingQuarterHours + timeChangeValue;
-        elapsedTimeChange++;
+        elapsedTimeChange = elapsedTimeChange + timeChangeValue;
       }
     }
   }
