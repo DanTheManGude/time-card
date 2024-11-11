@@ -1,7 +1,6 @@
 import {
   FormControl,
   Grid2,
-  InputLabel,
   NativeSelect,
   Paper,
   Typography,

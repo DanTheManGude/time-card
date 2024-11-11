@@ -22,7 +22,7 @@ function Main(props: WithPayPeriodProps) {
         index
       );
     },
-    [updateDay, days]
+    [updateDay]
   );
 
   return (
@@ -56,6 +56,7 @@ function Main(props: WithPayPeriodProps) {
             await navigator.clipboard.writeText(payPeriodString);
           } catch (error) {
             alert(payPeriodString);
+            console.warn(error);
           }
         }}
         fullWidth
