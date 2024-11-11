@@ -1,16 +1,16 @@
 "use client";
 
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
+import { ContentCopyRounded } from "@mui/icons-material";
+
 import withPayPeriod from "./withPayPeriod";
 import DayRow from "./dayRow";
 import { useCallback } from "react";
 import { convertQuarterHoursToString } from "../utility";
 
 function Main(props: WithPayPeriodProps) {
-  const {
-    payPeriod: { days, quarterHourDifference },
-    updateDay,
-  } = props;
+  const { payPeriod, updateDay, resetPayPeriod } = props;
+  const { days, quarterHourDifference } = payPeriod;
 
   const getUpdateDayActuaQuarterlHours = useCallback(
     (index: number) => (newActualQuarterHours: number) => {
@@ -26,7 +26,7 @@ function Main(props: WithPayPeriodProps) {
   );
 
   return (
-    <Stack direction={"column"} width={"100%"} paddingY={3} spacing={2}>
+    <Stack direction={"column"} width={"100%"} paddingY={2} spacing={2}>
       {quarterHourDifference ? (
         <Typography
           textAlign="center"
@@ -45,6 +45,31 @@ function Main(props: WithPayPeriodProps) {
           updateHours={getUpdateDayActuaQuarterlHours(index)}
         />
       ))}
+
+      <Button
+        color="secondary"
+        variant="outlined"
+        endIcon={<ContentCopyRounded />}
+        onClick={async () => {
+          const payPeriodString = JSON.stringify(payPeriod);
+          try {
+            await navigator.clipboard.writeText(payPeriodString);
+          } catch (error) {
+            alert(payPeriodString);
+          }
+        }}
+        fullWidth
+      >
+        <Typography>Debug</Typography>
+      </Button>
+      <Button
+        color="warning"
+        onClick={resetPayPeriod}
+        variant="outlined"
+        fullWidth
+      >
+        <Typography>Reset</Typography>
+      </Button>
     </Stack>
   );
 }

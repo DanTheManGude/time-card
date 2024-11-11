@@ -253,7 +253,7 @@ export function recalculatePayPeriod(
     (acc, day) => acc + (day.actualQuarterHours || day.targetQuarterHours),
     0
   );
-  let quarterHourDifference = workingQuarterHours - requiredQuarterHours;
+  const quarterHourDifference = workingQuarterHours - requiredQuarterHours;
 
   const modifiedDays = existingPayPeriodWithNewDays.days.map((day) => ({
     ...day,

@@ -29,8 +29,6 @@ export default function DayRow(props: {
         }${convertQuarterHoursToString(Math.abs(quarterHourDifference))})`
   }`;
 
-  const actualHoursLabel = `actualHoursSelect-${day.date.getTime()}`;
-
   return (
     <Paper elevation={3} sx={{ paddingY: 1.5, paddingX: 1 }}>
       <Grid2 container spacing={1} alignItems="end">
@@ -58,14 +56,11 @@ export default function DayRow(props: {
         </Grid2>
         <Grid2 size={4}>
           <FormControl fullWidth disabled={day.isHoliday}>
-            <InputLabel variant="standard" htmlFor={actualHoursLabel}>
-              Actual
-            </InputLabel>
             <NativeSelect
               defaultValue={day.actualQuarterHours}
               inputProps={{
                 name: "actualHours",
-                id: actualHoursLabel,
+                id: `actualHoursSelect-${day.date.getTime()}`,
               }}
               onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                 updateHours(Number(event.target.value));
