@@ -96,7 +96,7 @@ const getEstimatedHoursForDay = (day: number) =>
 
 function sortWeekDays(days: Day[], indexOffset: number): number[] {
   return Array.from(days)
-    .filter((day) => !day.isHoliday)
+    .filter((day) => !day.isHoliday && !day.actualQuarterHours)
     .sort(
       (dayA, dayB) =>
         weekDayTimePriority[dayA.date.getDay()] -
@@ -124,7 +124,10 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
       break;
     }
 
-    if (!days[nextFridayIndex].isHoliday) {
+    if (
+      !days[nextFridayIndex].isHoliday &&
+      !days[nextFridayIndex].actualQuarterHours
+    ) {
       fridays.push(nextFridayIndex);
     }
 
@@ -137,16 +140,16 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
     lastFridayIndex = nextFridayIndex;
   }
 
-  const add: TimeDifference[] = [
-    { target: 8 * 4, indexes: fridays },
-    { target: 10 * 4, indexes: sortedWeekDays },
-    { target: 10 * 4, indexes: fridays },
+  const deficit: TimeDifference[] = [
+    { limit: 8 * 4, indexes: fridays },
+    { limit: 10 * 4, indexes: sortedWeekDays },
+    { limit: 10 * 4, indexes: fridays },
   ];
-  const remove: TimeDifference[] = [
-    { target: 6 * 4, indexes: Array.from(sortedWeekDays).reverse() },
+  const surplus: TimeDifference[] = [
+    { limit: 6 * 4, indexes: Array.from(sortedWeekDays).reverse() },
   ];
 
-  return { add, remove };
+  return { deficit, surplus };
 }
 
 export function constructNewPayPeriod(): PayPeriod {
@@ -199,6 +202,41 @@ export function constructNewPayPeriod(): PayPeriod {
     timeDifferences,
   });
 }
+
+// Modifies days
+function iterateHours(
+  days: Day[],
+  requiredTimeChange: number,
+  timeDifferences: TimeDifference[],
+  timeChangeValue: -1 | 1
+) {
+  let elapsedTimeChange = 0;
+
+  for (const { limit, indexes } of timeDifferences) {
+    let hasReachedLimit = false;
+
+    while (!hasReachedLimit) {
+      for (const index in indexes) {
+        const existingQuarterHours = days[index].estimatedQuarterHours;
+
+        if (
+          existingQuarterHours === limit ||
+          elapsedTimeChange === requiredTimeChange
+        ) {
+          hasReachedLimit = true;
+          break;
+        }
+
+        days[index].estimatedQuarterHours =
+          existingQuarterHours + timeChangeValue;
+        elapsedTimeChange++;
+      }
+    }
+  }
+
+  return elapsedTimeChange;
+}
+
 export function recalculatePayPeriod(
   existingPayPeriodWithNewDays: PayPeriod
 ): PayPeriod {
@@ -207,15 +245,31 @@ export function recalculatePayPeriod(
     (acc, day) => acc + (day.actualQuarterHours || day.targetQuarterHours),
     0
   );
-  const quarterHourDifference = workingQuarterHours - requiredQuarterHours;
+  let quarterHourDifference = workingQuarterHours - requiredQuarterHours;
 
   const modifiedDays = existingPayPeriodWithNewDays.days.map((day) => ({
     ...day,
     estimatedQuarterHours: day.actualQuarterHours || day.targetQuarterHours,
   }));
 
-  if (quarterHourDifference > 0) {
-  } else if (quarterHourDifference < 0) {
+  if (quarterHourDifference !== 0) {
+    let timeDifferences: TimeDifference[];
+    let timeChangeValue: -1 | 1;
+
+    if (quarterHourDifference > 0) {
+      timeDifferences = existingPayPeriodWithNewDays.timeDifferences.surplus;
+      timeChangeValue = -1;
+    } else {
+      timeDifferences = existingPayPeriodWithNewDays.timeDifferences.deficit;
+      timeChangeValue = 1;
+    }
+
+    quarterHourDifference = iterateHours(
+      modifiedDays,
+      quarterHourDifference,
+      timeDifferences,
+      timeChangeValue
+    );
   }
 
   return {

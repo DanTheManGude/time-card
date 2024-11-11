@@ -11,13 +11,13 @@ type Day = {
 };
 
 type TimeDifference = {
-  target: number;
+  limit: number;
   indexes: number[];
 };
 
 type TimeDifferences = {
-  add: TimeDifference[];
-  remove: TimeDifference[];
+  deficit: TimeDifference[];
+  surplus: TimeDifference[];
 };
 
 type PayPeriod = {
