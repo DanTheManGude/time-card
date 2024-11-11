@@ -4,13 +4,17 @@ import {
   InputLabel,
   NativeSelect,
   Paper,
+  SelectChangeEvent,
   Typography,
 } from "@mui/material";
 import { convertQuarterHoursToString } from "../utility";
 import { actualHoursOptions } from "./utility";
 
-export default function DayRow(props: { day: Day }) {
-  const { day } = props;
+export default function DayRow(props: {
+  day: Day;
+  updateHours: (newActualQuarterHours: number) => void;
+}) {
+  const { day, updateHours } = props;
 
   const expectedHoursMessage = `Expected- ${convertQuarterHoursToString(
     day.estimatedQuarterHours
@@ -43,6 +47,9 @@ export default function DayRow(props: { day: Day }) {
               inputProps={{
                 name: "actualHours",
                 id: actualHoursLabel,
+              }}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                updateHours(Number(event.target.value));
               }}
             >
               {actualHoursOptions}
