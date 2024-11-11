@@ -33,18 +33,20 @@ export default function DayRow(props: {
 
   return (
     <Paper elevation={3} sx={{ paddingY: 1.5, paddingX: 1 }}>
-      <Grid2 container spacing={2} alignItems="end">
+      <Grid2 container spacing={1} alignItems="end">
         <Grid2 size={4}>
-          <Typography key={day.date.getDate()}>
+          <Typography>
             {day.date.toLocaleDateString(undefined, {
               month: "short",
               day: "numeric",
-              weekday: "long",
+              weekday: "short",
             })}
           </Typography>
         </Grid2>
         <Grid2 size={4}>
-          <Typography>{expectedHoursMessage}</Typography>
+          <Typography color={quarterHourDifference > 0 ? "success" : "error"}>
+            {expectedHoursMessage}
+          </Typography>
         </Grid2>
         <Grid2 size={4}>
           <FormControl fullWidth disabled={day.isHoliday}>

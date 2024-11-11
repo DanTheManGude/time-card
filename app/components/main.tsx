@@ -28,7 +28,11 @@ function Main(props: WithPayPeriodProps) {
   return (
     <Stack direction={"column"} width={"100%"} paddingY={3} spacing={2}>
       {quarterHourDifference ? (
-        <Typography>
+        <Typography
+          textAlign="center"
+          variant="h6"
+          color={quarterHourDifference > 0 ? "success" : "error"}
+        >
           {`You are ${
             quarterHourDifference > 0 ? "ahead" : "behind"
           } by ${convertQuarterHoursToString(Math.abs(quarterHourDifference))}`}
