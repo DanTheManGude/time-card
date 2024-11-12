@@ -32,7 +32,13 @@ export default function DayRow(props: {
     <Paper elevation={3} sx={{ paddingY: 1.5, paddingX: 1 }}>
       <Grid2 container spacing={1} alignItems="end">
         <Grid2 size={4}>
-          <Typography>
+          <Typography
+            color={
+              day.date.getDate() === new Date().getDate()
+                ? "primary"
+                : "textPrimary"
+            }
+          >
             {day.date.toLocaleDateString(undefined, {
               month: "short",
               day: "numeric",
