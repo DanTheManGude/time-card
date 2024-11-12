@@ -16,7 +16,7 @@ function isWeekday(date: Date) {
   return !(dayOfWeek === SUNDAY || dayOfWeek === SATURDAY);
 }
 
-function isFriday(date: Date) {
+export function isFriday(date: Date) {
   return date.getDay() === FRIDAY;
 }
 

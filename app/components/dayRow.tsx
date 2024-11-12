@@ -5,7 +5,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { convertQuarterHoursToString } from "../utility";
+import { convertQuarterHoursToString, isFriday } from "../utility";
 import { actualHoursOptions } from "./utility";
 
 export default function DayRow(props: {
@@ -45,9 +45,9 @@ export default function DayRow(props: {
             color={
               quarterHourDifference === 0
                 ? undefined
-                : quarterHourDifference > 0
-                ? "success"
-                : "error"
+                : quarterHourDifference * (isFriday(day.date) ? -1 : 1) > 0
+                ? "error"
+                : "success"
             }
           >
             {expectedHoursMessage}
