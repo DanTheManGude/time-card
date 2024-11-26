@@ -8,6 +8,9 @@ import {
   NORMAL_ESTIMATED_QUARTER_HOURS,
   STATIC_HOLIDAYS,
   weekDayTimePriority,
+  MONDAY,
+  NOVEMBER,
+  MAY,
 } from "./constants";
 
 function isWeekday(date: Date) {
@@ -25,17 +28,23 @@ function calculateRelativeHoliday(
   dayOfWeek: number,
   month: number
 ): Date {
-  const date = new Date(new Date().getFullYear(), month, 1);
+  let date = new Date(new Date().getFullYear(), month, 1);
+  let addend = 1;
+  if (countOfDay < 0) {
+    date = new Date(new Date().getFullYear(), month + 1, 0);
+    addend = -1;
+  }
+
   let numberOfDay = 0;
 
-  while (numberOfDay < countOfDay) {
+  while (numberOfDay < Math.abs(countOfDay)) {
     while (date.getDay() != dayOfWeek) {
-      date.setDate(date.getDate() + 1);
+      date.setDate(date.getDate() + addend);
     }
     numberOfDay++;
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate() + addend);
   }
-  date.setDate(date.getDate() - 1);
+  date.setDate(date.getDate() - addend);
 
   return date;
 }
@@ -45,11 +54,20 @@ function calculateHolidaysForMonth(targetMonth: number): number[] {
     (holiday) => holiday.month === targetMonth
   ).map((holiday) => holiday.day);
 
-  if (targetMonth === 10) {
-    const thanksgving = calculateRelativeHoliday(4, THURSDAY, 10);
-
-    holidays.push(thanksgving.getDate());
-    holidays.push(thanksgving.getDate() + 1);
+  switch (targetMonth) {
+    case NOVEMBER:
+      const thanksgving = calculateRelativeHoliday(4, THURSDAY, targetMonth);
+      holidays.push(thanksgving.getDate());
+      holidays.push(thanksgving.getDate() + 1);
+      break;
+    case MAY:
+      const memorialDay = calculateRelativeHoliday(-1, MONDAY, targetMonth);
+      holidays.push(memorialDay.getDate());
+    case MAY:
+      const laborDay = calculateRelativeHoliday(1, MONDAY, targetMonth);
+      holidays.push(laborDay.getDate());
+    default:
+      break;
   }
 
   return holidays;
