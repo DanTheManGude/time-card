@@ -11,6 +11,7 @@ import {
   MONDAY,
   NOVEMBER,
   MAY,
+  SEPTEMBER,
 } from "./constants";
 
 function isWeekday(date: Date) {
@@ -63,7 +64,7 @@ function calculateHolidaysForMonth(targetMonth: number): number[] {
     case MAY:
       const memorialDay = calculateRelativeHoliday(-1, MONDAY);
       holidays.push(memorialDay.getDate());
-    case MAY:
+    case SEPTEMBER:
       const laborDay = calculateRelativeHoliday(1, MONDAY);
       holidays.push(laborDay.getDate());
     default:
