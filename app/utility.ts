@@ -23,48 +23,48 @@ export function isFriday(date: Date) {
   return date.getDay() === FRIDAY;
 }
 
-function calculateRelativeHoliday(
-  countOfDay: number,
-  dayOfWeek: number,
-  month: number
-): Date {
-  let date = new Date(new Date().getFullYear(), month, 1);
-  let addend = 1;
-  if (countOfDay < 0) {
-    date = new Date(new Date().getFullYear(), month + 1, 0);
-    addend = -1;
-  }
+const getCalculateRelativeHoliday =
+  (month: number) =>
+  (countOfDay: number, dayOfWeek: number): Date => {
+    let date = new Date(new Date().getFullYear(), month, 1);
+    let addend = 1;
+    if (countOfDay < 0) {
+      date = new Date(new Date().getFullYear(), month + 1, 0);
+      addend = -1;
+    }
 
-  let numberOfDay = 0;
+    let numberOfDay = 0;
 
-  while (numberOfDay < Math.abs(countOfDay)) {
-    while (date.getDay() != dayOfWeek) {
+    while (numberOfDay < Math.abs(countOfDay)) {
+      while (date.getDay() != dayOfWeek) {
+        date.setDate(date.getDate() + addend);
+      }
+      numberOfDay++;
       date.setDate(date.getDate() + addend);
     }
-    numberOfDay++;
-    date.setDate(date.getDate() + addend);
-  }
-  date.setDate(date.getDate() - addend);
+    date.setDate(date.getDate() - addend);
 
-  return date;
-}
+    return date;
+  };
 
 function calculateHolidaysForMonth(targetMonth: number): number[] {
   const holidays = STATIC_HOLIDAYS.filter(
     (holiday) => holiday.month === targetMonth
   ).map((holiday) => holiday.day);
 
+  const calculateRelativeHoliday = getCalculateRelativeHoliday(targetMonth);
+
   switch (targetMonth) {
     case NOVEMBER:
-      const thanksgving = calculateRelativeHoliday(4, THURSDAY, targetMonth);
+      const thanksgving = calculateRelativeHoliday(4, THURSDAY);
       holidays.push(thanksgving.getDate());
       holidays.push(thanksgving.getDate() + 1);
       break;
     case MAY:
-      const memorialDay = calculateRelativeHoliday(-1, MONDAY, targetMonth);
+      const memorialDay = calculateRelativeHoliday(-1, MONDAY);
       holidays.push(memorialDay.getDate());
     case MAY:
-      const laborDay = calculateRelativeHoliday(1, MONDAY, targetMonth);
+      const laborDay = calculateRelativeHoliday(1, MONDAY);
       holidays.push(laborDay.getDate());
     default:
       break;
