@@ -25,12 +25,12 @@ export function isFriday(date: Date) {
 }
 
 const getCalculateRelativeHoliday =
-  (month: number) =>
+  (targetDate: Date) =>
   (countOfDay: number, dayOfWeek: number): Date => {
-    let date = new Date(new Date().getFullYear(), month, 1);
+    let date = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
     let addend = 1;
     if (countOfDay < 0) {
-      date = new Date(new Date().getFullYear(), month + 1, 0);
+      date = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
       addend = -1;
     }
 
@@ -48,14 +48,14 @@ const getCalculateRelativeHoliday =
     return date;
   };
 
-function calculateHolidaysForMonth(targetMonth: number): number[] {
+function calculateHolidaysForDate(targetDate: Date): number[] {
   const holidays = STATIC_HOLIDAYS.filter(
-    (holiday) => holiday.month === targetMonth
+    (holiday) => holiday.month === targetDate.getMonth()
   ).map((holiday) => holiday.day);
 
-  const calculateRelativeHoliday = getCalculateRelativeHoliday(targetMonth);
+  const calculateRelativeHoliday = getCalculateRelativeHoliday(targetDate);
 
-  switch (targetMonth) {
+  switch (targetDate.getMonth()) {
     case NOVEMBER:
       const thanksgving = calculateRelativeHoliday(4, THURSDAY);
       holidays.push(thanksgving.getDate());
@@ -93,11 +93,7 @@ function getFirstAndLastDays(today: Date) {
     }
 
     if (today.getDate() <= lastWeekdayOfMonth.getDate()) {
-      firstDate = firstDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        16
-      );
+      firstDate = new Date(today.getFullYear(), today.getMonth(), 16);
       lastDate = lastWeekdayOfMonth;
     } else {
       firstDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
@@ -182,7 +178,7 @@ export function constructNewPayPeriod(): PayPeriod {
 
   const days: Day[] = [];
 
-  const holidays = calculateHolidaysForMonth(firstDate.getMonth());
+  const holidays = calculateHolidaysForDate(firstDate);
 
   const currentDate = new Date(firstDate);
   const incrementCurrentDate = () => {
