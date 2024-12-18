@@ -73,21 +73,11 @@ export default function withPayPeriod(
       );
     };
 
-    const resetPayPeriod = () => {
-      setPayPeriod(null);
-    };
-
     if (!payPeriod) {
       return null;
     }
 
-    return (
-      <WrappedComponent
-        payPeriod={payPeriod}
-        updateDay={updateDay}
-        resetPayPeriod={resetPayPeriod}
-      />
-    );
+    return <WrappedComponent payPeriod={payPeriod} updateDay={updateDay} />;
   };
 
   Component.displayName = `withPayperiod(${

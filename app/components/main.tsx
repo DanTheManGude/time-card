@@ -9,7 +9,7 @@ import { useCallback } from "react";
 import { convertQuarterHoursToString } from "../utility";
 
 function Main(props: WithPayPeriodProps) {
-  const { payPeriod, updateDay, resetPayPeriod } = props;
+  const { payPeriod, updateDay } = props;
   const { days, quarterHourDifference } = payPeriod;
 
   const getUpdateDayActuaQuarterlHours = useCallback(
@@ -72,14 +72,6 @@ function Main(props: WithPayPeriodProps) {
         fullWidth
       >
         <Typography>Debug</Typography>
-      </Button>
-      <Button
-        color="warning"
-        onClick={resetPayPeriod}
-        variant="outlined"
-        fullWidth
-      >
-        <Typography>Reset</Typography>
       </Button>
     </Stack>
   );
