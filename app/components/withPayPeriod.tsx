@@ -7,7 +7,7 @@ import { LOCAL_STORAGE_KEY } from "../constants";
 export default function withPayPeriod(
   WrappedComponent: React.ComponentType<WithPayPeriodProps>
 ) {
-  const ComponentWithTheme = () => {
+  const Component = () => {
     const [payPeriod, setPayPeriod] = useState<PayPeriod | null>(null);
     const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -90,9 +90,9 @@ export default function withPayPeriod(
     );
   };
 
-  ComponentWithTheme.displayName = `withDays(${
+  Component.displayName = `withPayperiod(${
     WrappedComponent.displayName || WrappedComponent.name || "Component"
   })`;
 
-  return ComponentWithTheme;
+  return Component;
 }
