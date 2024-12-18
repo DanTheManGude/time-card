@@ -181,9 +181,6 @@ export function constructNewPayPeriod(): PayPeriod {
   const holidays = calculateHolidaysForDate(firstDate);
 
   const currentDate = new Date(firstDate);
-  const incrementCurrentDate = () => {
-    currentDate.setDate(currentDate.getDate() + 1);
-  };
 
   while (currentDate.getTime() <= lastDate.getTime()) {
     if (isWeekday(currentDate)) {
@@ -205,7 +202,7 @@ export function constructNewPayPeriod(): PayPeriod {
         });
       }
     }
-    incrementCurrentDate();
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   const lastDateInPayPeriod = days.at(-1)?.date;
