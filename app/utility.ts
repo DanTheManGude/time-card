@@ -185,7 +185,7 @@ export function constructNewPayPeriod(): PayPeriod {
     currentDate.setDate(currentDate.getDate() + 1);
   };
 
-  while (currentDate.getDate() <= lastDate.getDate()) {
+  while (currentDate.getTime() <= lastDate.getTime()) {
     if (isWeekday(currentDate)) {
       const targetQuarterHours = getEstimatedHoursForDay(currentDate.getDay());
       if (holidays.includes(currentDate.getDate())) {
