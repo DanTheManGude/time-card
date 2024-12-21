@@ -156,7 +156,7 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   }
 
   const reverseWeekDays = Array.from(sortedWeekDays).reverse();
-  const reverseFridays = Array.from(sortedWeekDays).reverse();
+  const reverseFridays = Array.from(orderedFridays).reverse();
 
   const deficit: TimeDifference[] = [
     { limit: 8 * 4, indexes: orderedFridays },
