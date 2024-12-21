@@ -157,8 +157,6 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
     );
   }
 
-  debugger;
-
   const reverseWeekDays = Array.from(sortedWeekDays).reverse();
   const reverseFridays = Array.from(orderedFridays).reverse();
 

@@ -1,7 +1,6 @@
 "use client";
 
-import { Button, Stack, Typography, TypographyProps } from "@mui/material";
-import { ContentCopyRounded } from "@mui/icons-material";
+import { Stack, Typography, TypographyProps } from "@mui/material";
 
 import withPayPeriod from "./withPayPeriod";
 import DayRow from "./dayRow";
@@ -55,24 +54,6 @@ function Main(props: WithPayPeriodProps) {
           updateHours={getUpdateDayActuaQuarterlHours(index)}
         />
       ))}
-
-      <Button
-        color="secondary"
-        variant="outlined"
-        endIcon={<ContentCopyRounded />}
-        onClick={async () => {
-          const payPeriodString = JSON.stringify(payPeriod);
-          try {
-            await navigator.clipboard.writeText(payPeriodString);
-          } catch (error) {
-            alert(payPeriodString);
-            console.warn(error);
-          }
-        }}
-        fullWidth
-      >
-        <Typography>Debug</Typography>
-      </Button>
     </Stack>
   );
 }
