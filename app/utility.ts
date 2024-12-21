@@ -128,32 +128,36 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   const sortedWeekDays: number[] = [];
   const orderedFridays: number[] = [];
 
-  let lastFridayIndex = -1;
+  let currentWeekDays: Day[] = [];
+  let currentWeekDaysOffset = 0;
 
-  while (true) {
-    let nextFridayIndex = days
-      .slice(lastFridayIndex + 1)
-      .findIndex((day) => isFriday(day.date));
-
-    if (nextFridayIndex === -1) {
-      break;
+  days.forEach((currentDay, index) => {
+    if (isFriday(currentDay.date)) {
+      if (currentWeekDays.length > 0) {
+        sortedWeekDays.push(
+          ...sortWeekDays(currentWeekDays, currentWeekDaysOffset)
+        );
+        currentWeekDays = [];
+      }
+      if (!currentDay.isHoliday) {
+        orderedFridays.push(index);
+      }
+      return;
     }
 
-    nextFridayIndex = nextFridayIndex + lastFridayIndex + 1;
-
-    if (!days[nextFridayIndex].isHoliday) {
-      orderedFridays.push(nextFridayIndex);
+    if (currentWeekDays.length === 0) {
+      currentWeekDaysOffset = index;
     }
+    currentWeekDays.push(currentDay);
+  });
 
+  if (currentWeekDays.length > 0) {
     sortedWeekDays.push(
-      ...sortWeekDays(
-        days.slice(lastFridayIndex + 1, nextFridayIndex),
-        lastFridayIndex + 1
-      )
+      ...sortWeekDays(currentWeekDays, currentWeekDaysOffset)
     );
-
-    lastFridayIndex = nextFridayIndex;
   }
+
+  debugger;
 
   const reverseWeekDays = Array.from(sortedWeekDays).reverse();
   const reverseFridays = Array.from(orderedFridays).reverse();
