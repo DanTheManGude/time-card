@@ -232,19 +232,22 @@ function iterateHours(
   let elapsedTimeChange = 0;
 
   for (const { limit, indexes } of timeDifferences) {
-    let hasReachedLimit = false;
+    const availableIndexes = indexes.filter(
+      (index) => !days[index].actualQuarterHours
+    );
+    let hasReachedLimit = availableIndexes.length === 0;
 
     while (!hasReachedLimit) {
       for (const index of indexes) {
-        if (days[index].actualQuarterHours) {
+        if (!availableIndexes.includes(index)) {
           continue;
         }
 
         const existingQuarterHours = days[index].estimatedQuarterHours;
 
         if (existingQuarterHours === limit) {
-          hasReachedLimit = true;
-          break;
+          availableIndexes.filter((i) => i !== index);
+          continue;
         }
 
         days[index].estimatedQuarterHours =
@@ -255,6 +258,7 @@ function iterateHours(
           return;
         }
       }
+      hasReachedLimit = availableIndexes.length === 0;
     }
   }
 }
