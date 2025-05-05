@@ -64,9 +64,11 @@ function calculateHolidaysForDate(targetDate: Date): number[] {
     case MAY:
       const memorialDay = calculateRelativeHoliday(-1, MONDAY);
       holidays.push(memorialDay.getDate());
+      break;
     case SEPTEMBER:
       const laborDay = calculateRelativeHoliday(1, MONDAY);
       holidays.push(laborDay.getDate());
+      break;
     default:
       break;
   }
