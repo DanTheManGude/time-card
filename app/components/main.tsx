@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack, Typography, TypographyProps } from "@mui/material";
+import { Button, Stack, Typography, TypographyProps } from "@mui/material";
 
 import withPayPeriod from "./withPayPeriod";
 import DayRow from "./dayRow";
@@ -8,7 +8,7 @@ import { useCallback } from "react";
 import { convertQuarterHoursToString } from "../utility";
 
 function Main(props: WithPayPeriodProps) {
-  const { payPeriod, updateDay } = props;
+  const { payPeriod, updateDay, resetPayPeriod } = props;
   const { days, quarterHourDifference } = payPeriod;
 
   const getUpdateDayActuaQuarterlHours = useCallback(
@@ -54,6 +54,15 @@ function Main(props: WithPayPeriodProps) {
           updateHours={getUpdateDayActuaQuarterlHours(index)}
         />
       ))}
+
+      <Button
+        color="warning"
+        onClick={resetPayPeriod}
+        variant="outlined"
+        fullWidth
+      >
+        <Typography>Reset</Typography>
+      </Button>
     </Stack>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { constructNewPayPeriod, recalculatePayPeriod } from "../utility";
 import { LOCAL_STORAGE_KEY } from "../constants";
 
@@ -73,11 +73,23 @@ export default function withPayPeriod(
       );
     };
 
+    const resetPayPeriod = useCallback(() => {
+      setPayPeriod(null);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      console.log("Pay period reset");
+    }, [setPayPeriod]);
+
     if (!payPeriod) {
       return null;
     }
 
-    return <WrappedComponent payPeriod={payPeriod} updateDay={updateDay} />;
+    return (
+      <WrappedComponent
+        payPeriod={payPeriod}
+        updateDay={updateDay}
+        resetPayPeriod={resetPayPeriod}
+      />
+    );
   };
 
   Component.displayName = `withPayperiod(${
