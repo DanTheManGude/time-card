@@ -12,6 +12,8 @@ import {
   NOVEMBER,
   MAY,
   SEPTEMBER,
+  TUESDAY,
+  TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS,
 } from "./constants";
 
 function isWeekday(date: Date) {
@@ -106,10 +108,17 @@ function getFirstAndLastDays(today: Date) {
   return { firstDate, lastDate };
 }
 
-const getEstimatedHoursForDay = (day: number) =>
-  day === FRIDAY
-    ? FRIDAY_ESTIMATED_QUARTER_HOURS
-    : NORMAL_ESTIMATED_QUARTER_HOURS;
+const getEstimatedHoursForDay = (day: number) => {
+  switch (day) {
+    case TUESDAY:
+    case THURSDAY:
+      return TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS;
+    case FRIDAY:
+      return FRIDAY_ESTIMATED_QUARTER_HOURS;
+    default:
+      return NORMAL_ESTIMATED_QUARTER_HOURS;
+  }
+};
 
 function sortWeekDays(days: Day[], indexOffset: number): number[] {
   return Array.from(days)
