@@ -10,6 +10,7 @@ export const fontFamilies = [
 export const LOCAL_STORAGE_KEY = "TIME_CARD_PAY_PERIOD";
 
 export const NORMAL_ESTIMATED_QUARTER_HOURS = 8.5 * 4;
+export const TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS = 8.25 * 4;
 export const FRIDAY_ESTIMATED_QUARTER_HOURS = 6 * 4;
 export const HOLIDAY_QUARTER_HOURS = 8 * 4;
 
