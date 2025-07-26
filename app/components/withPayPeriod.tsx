@@ -8,7 +8,8 @@ export default function withPayPeriod(
   WrappedComponent: React.ComponentType<WithPayPeriodProps>
 ) {
   const Component = () => {
-    const [payPeriod, setPayPeriod] = useState<PayPeriod | null>(null);
+    const [payPeriod, setPayPeriod] = useState<PayPeriod>();
+    const [nextPayPeriod, setNextPayPeriod] = useState<PayPeriod>();
     const [loaded, setLoaded] = useState<boolean>(false);
 
     useEffect(() => {
@@ -54,6 +55,16 @@ export default function withPayPeriod(
       }
     }, [payPeriod, loaded]);
 
+    useEffect(() => {
+      if (!payPeriod) {
+        return;
+      }
+      const nextPayPeriodStart = new Date(payPeriod.lastDate);
+      nextPayPeriodStart.setDate(payPeriod.lastDate.getDate() + 1);
+
+      setNextPayPeriod(constructNewPayPeriod(nextPayPeriodStart));
+    }, [payPeriod]);
+
     const updateDay = (getNewDay: (existingDay: Day) => Day, index: number) => {
       if (!payPeriod) {
         console.error("Updating day without pay period");
@@ -69,12 +80,12 @@ export default function withPayPeriod(
                 getNewDay(existingPayPeriod.days[index])
               ),
             })
-          : null
+          : undefined
       );
     };
 
     const resetPayPeriod = useCallback(() => {
-      setPayPeriod(null);
+      setPayPeriod(undefined);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
       console.log("Pay period reset");
     }, [setPayPeriod]);
@@ -88,6 +99,7 @@ export default function withPayPeriod(
         payPeriod={payPeriod}
         updateDay={updateDay}
         resetPayPeriod={resetPayPeriod}
+        nextPayPeriod={nextPayPeriod}
       />
     );
   };
