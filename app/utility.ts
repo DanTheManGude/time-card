@@ -172,14 +172,20 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   const reverseFridays = Array.from(orderedFridays).reverse();
 
   const deficit: TimeDifference[] = [
-    { limit: 8 * 4, indexes: orderedFridays },
-    { limit: 10 * 4, indexes: sortedWeekDays },
-    { limit: 10 * 4, indexes: orderedFridays },
-    { limit: 12 * 4, indexes: [...sortedWeekDays, ...orderedFridays] },
+    { limit: convertHoursToQuarterHours(8), indexes: orderedFridays },
+    { limit: convertHoursToQuarterHours(10), indexes: sortedWeekDays },
+    { limit: convertHoursToQuarterHours(10), indexes: orderedFridays },
+    {
+      limit: convertHoursToQuarterHours(12),
+      indexes: [...sortedWeekDays, ...orderedFridays],
+    },
   ];
   const surplus: TimeDifference[] = [
-    { limit: 6 * 4, indexes: reverseWeekDays },
-    { limit: 4 * 4, indexes: [...reverseFridays, ...reverseWeekDays] },
+    { limit: convertHoursToQuarterHours(6), indexes: reverseWeekDays },
+    {
+      limit: convertHoursToQuarterHours(4),
+      indexes: [...reverseFridays, ...reverseWeekDays],
+    },
   ];
 
   return { deficit, surplus };
@@ -277,7 +283,8 @@ function iterateHours(
 export function recalculatePayPeriod(
   existingPayPeriodWithNewDays: PayPeriod
 ): PayPeriod {
-  const requiredQuarterHours = existingPayPeriodWithNewDays.days.length * 8 * 4;
+  const requiredQuarterHours =
+    existingPayPeriodWithNewDays.days.length * convertHoursToQuarterHours(8);
   const workingQuarterHours = existingPayPeriodWithNewDays.days.reduce(
     (acc, day) => acc + (day.actualQuarterHours || day.targetQuarterHours),
     0
@@ -322,4 +329,8 @@ export function convertQuarterHoursToString(quarterHours: number) {
   const quarterHoursAsMinutes = String(remainingQuarters * 15).padStart(2, "0");
 
   return `${fullHours}:${quarterHoursAsMinutes}`;
+}
+
+export function convertHoursToQuarterHours(hours: number) {
+  return hours * 4;
 }
