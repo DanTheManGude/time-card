@@ -57,7 +57,7 @@ function Main(props: WithPayPeriodProps) {
         fullWidth
         size="large"
       >
-        <Typography>Preview next</Typography>
+        <Typography>Preview next pay period</Typography>
       </Button>
 
       <Button
