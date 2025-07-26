@@ -1,21 +1,23 @@
 "use client";
 import { useCallback, useState } from "react";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import withPayPeriod from "./withPayPeriod";
 import DayRow from "./dayRow";
 import Message from "./Message";
+import MainStack from "./MainStack";
 
 function Main(props: WithPayPeriodProps) {
   const { payPeriod, updateDay, resetPayPeriod } = props;
   const { days, quarterHourDifference } = payPeriod;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPreviewNext, setIsPreviewNext] = useState(false);
   const previewNextPayPeriod = useCallback(() => {
     setIsPreviewNext(true);
   }, []);
-  const viewCurrentPayPeriod = useCallback(() => {
-    setIsPreviewNext(false);
-  }, []);
+  // const viewCurrentPayPeriod = useCallback(() => {
+  //   setIsPreviewNext(false);
+  // }, []);
 
   const getUpdateDayActuaQuarterlHours = useCallback(
     (index: number) => (newActualQuarterHours: number) => {
@@ -31,7 +33,7 @@ function Main(props: WithPayPeriodProps) {
   );
 
   return (
-    <Stack direction={"column"} width={"100%"} paddingY={2} spacing={2}>
+    <MainStack>
       <Message quarterHourDifference={quarterHourDifference} />
       {days.map((day, index) => (
         <DayRow
@@ -58,7 +60,7 @@ function Main(props: WithPayPeriodProps) {
       >
         <Typography>Reset</Typography>
       </Button>
-    </Stack>
+    </MainStack>
   );
 }
 
