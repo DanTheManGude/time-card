@@ -191,9 +191,9 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   return { deficit, surplus };
 }
 
-export function constructNewPayPeriod(): PayPeriod {
+export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
   console.log("creating new pay period");
-  const { firstDate, lastDate } = getFirstAndLastDays(new Date());
+  const { firstDate, lastDate } = getFirstAndLastDays(referenceDate);
 
   const days: Day[] = [];
 

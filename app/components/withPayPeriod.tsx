@@ -50,7 +50,7 @@ export default function withPayPeriod(
         console.log("Saving pay period to local storage", payPeriod);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payPeriod));
       } else {
-        setPayPeriod(constructNewPayPeriod());
+        setPayPeriod(constructNewPayPeriod(new Date()));
       }
     }, [payPeriod, loaded]);
 
