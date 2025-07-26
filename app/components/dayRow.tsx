@@ -7,12 +7,17 @@ import {
 } from "@mui/material";
 import { convertQuarterHoursToString, isFriday } from "../utility";
 import { actualHoursOptions } from "./utility";
+import { useMemo } from "react";
 
-export default function DayRow(props: {
+export type UpdateHours = (newActualQuarterHours: number) => void;
+type DayRowProps = {
   day: Day;
-  updateHours: (newActualQuarterHours: number) => void;
-}) {
-  const { day, updateHours } = props;
+  updateHours?: UpdateHours;
+  editable: boolean;
+};
+
+export default function DayRow(props: DayRowProps) {
+  const { day, updateHours, editable } = props;
 
   const quarterHourDifference =
     day.targetQuarterHours -
@@ -27,6 +32,15 @@ export default function DayRow(props: {
           quarterHourDifference > 0 ? "-" : "+"
         }${convertQuarterHoursToString(Math.abs(quarterHourDifference))})`
   }`;
+
+  const onHourChange = useMemo(() => {
+    if (!editable || !updateHours) {
+      return undefined;
+    }
+    return (event: React.ChangeEvent<HTMLSelectElement>) => {
+      updateHours(Number(event.target.value));
+    };
+  }, [editable, updateHours]);
 
   return (
     <Paper elevation={3} sx={{ paddingY: 1.5, paddingX: 1 }}>
@@ -60,16 +74,14 @@ export default function DayRow(props: {
           </Typography>
         </Grid2>
         <Grid2 size={4}>
-          <FormControl fullWidth disabled={day.isHoliday}>
+          <FormControl fullWidth disabled={day.isHoliday || !editable}>
             <NativeSelect
               defaultValue={day.actualQuarterHours}
               inputProps={{
                 name: "actualHours",
                 id: `actualHoursSelect-${day.date.getTime()}`,
               }}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                updateHours(Number(event.target.value));
-              }}
+              onChange={onHourChange}
             >
               {actualHoursOptions}
             </NativeSelect>

@@ -2,10 +2,10 @@
 import { useCallback, useState } from "react";
 import { Button, Typography } from "@mui/material";
 import withPayPeriod from "./withPayPeriod";
-import DayRow from "./dayRow";
 import Message from "./Message";
 import MainStack from "./MainStack";
 import NextPayperiod from "./NextPayperiod";
+import DayList from "./DayList";
 
 function Main(props: WithPayPeriodProps) {
   const { payPeriod, updateDay, resetPayPeriod } = props;
@@ -33,19 +33,22 @@ function Main(props: WithPayPeriodProps) {
   );
 
   if (isPreviewNext) {
-    return <NextPayperiod viewCurrentPayPeriod={viewCurrentPayPeriod} />;
+    return (
+      <NextPayperiod
+        viewCurrentPayPeriod={viewCurrentPayPeriod}
+        nextPayPeriod={payPeriod}
+      />
+    );
   }
 
   return (
     <MainStack>
       <Message quarterHourDifference={quarterHourDifference} />
-      {days.map((day, index) => (
-        <DayRow
-          day={day}
-          key={`dayRowKey-${day.date.getTime()}`}
-          updateHours={getUpdateDayActuaQuarterlHours(index)}
-        />
-      ))}
+      <DayList
+        days={days}
+        getUpdateHours={getUpdateDayActuaQuarterlHours}
+        editable={true}
+      />
       <Button
         color="info"
         onClick={previewNextPayPeriod}
