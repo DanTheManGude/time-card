@@ -1,4 +1,5 @@
 import {
+  convertHoursToQuarterHours,
   THURSDAY,
   FRIDAY,
   SATURDAY,
@@ -331,8 +332,4 @@ export function convertQuarterHoursToString(quarterHours: number) {
   const quarterHoursAsMinutes = String(remainingQuarters * 15).padStart(2, "0");
 
   return `${fullHours}:${quarterHoursAsMinutes}`;
-}
-
-export function convertHoursToQuarterHours(hours: number) {
-  return hours * 4;
 }

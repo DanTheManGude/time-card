@@ -1,15 +1,17 @@
+import { convertHoursToQuarterHours } from "../constants";
 import { convertQuarterHoursToString } from "../utility";
 
-const offset = 4 * 4;
+const startTime = convertHoursToQuarterHours(4);
+const endTime = convertHoursToQuarterHours(12);
 
 export const actualHoursOptions = [
   <option value={0} key={"NOT_SET"}>
     {"Not set"}
   </option>,
-  ...Array(4 * 12 + 1 - offset)
+  ...Array(endTime + 1 - startTime)
     .fill(null)
     .map((__v, index) => {
-      const value = index + offset;
+      const value = index + startTime;
       return (
         <option value={value} key={`${value}`}>
           {convertQuarterHoursToString(value)}
