@@ -44,6 +44,7 @@ interface WithPayPeriodProps {
   payPeriod: PayPeriod;
   updateDay: (getNewDay: (existingDay: Day) => Day, index: number) => void;
   resetPayPeriod: () => void;
+  nextPayPeriod?: PayPeriod;
 }
 
 type Holiday = {

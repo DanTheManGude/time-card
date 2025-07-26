@@ -1,15 +1,24 @@
 "use client";
-
-import { Button, Stack, Typography, TypographyProps } from "@mui/material";
-
+import { useCallback, useState } from "react";
+import { Button, Typography } from "@mui/material";
 import withPayPeriod from "./withPayPeriod";
-import DayRow from "./dayRow";
-import { useCallback } from "react";
-import { convertQuarterHoursToString } from "../utility";
+import Message from "./Message";
+import MainStack from "./MainStack";
+import NextPayperiod from "./NextPayperiod";
+import DayList from "./DayList";
 
 function Main(props: WithPayPeriodProps) {
-  const { payPeriod, updateDay, resetPayPeriod } = props;
+  const { payPeriod, updateDay, resetPayPeriod, nextPayPeriod } = props;
   const { days, quarterHourDifference } = payPeriod;
+
+  const [isPreviewNext, setIsPreviewNext] = useState(false);
+  const previewNextPayPeriod = useCallback(() => {
+    scrollTo(0, 0);
+    setIsPreviewNext(true);
+  }, []);
+  const viewCurrentPayPeriod = useCallback(() => {
+    setIsPreviewNext(false);
+  }, []);
 
   const getUpdateDayActuaQuarterlHours = useCallback(
     (index: number) => (newActualQuarterHours: number) => {
@@ -24,36 +33,33 @@ function Main(props: WithPayPeriodProps) {
     [updateDay]
   );
 
-  const renderMessage = () => {
-    let color: TypographyProps["color"];
-    let message: string;
-
-    if (quarterHourDifference === 0) {
-      color = "info";
-      message = "You are on track.";
-    } else {
-      message = `You are ${
-        quarterHourDifference > 0 ? "ahead" : "behind"
-      } by ${convertQuarterHoursToString(Math.abs(quarterHourDifference))}`;
-    }
-
+  if (isPreviewNext && nextPayPeriod) {
     return (
-      <Typography textAlign="center" variant="h6" color={color}>
-        {message}
-      </Typography>
+      <NextPayperiod
+        viewCurrentPayPeriod={viewCurrentPayPeriod}
+        nextPayPeriod={nextPayPeriod}
+      />
     );
-  };
+  }
 
   return (
-    <Stack direction={"column"} width={"100%"} paddingY={2} spacing={2}>
-      {renderMessage()}
-      {days.map((day, index) => (
-        <DayRow
-          day={day}
-          key={`dayRowKey-${day.date.getTime()}`}
-          updateHours={getUpdateDayActuaQuarterlHours(index)}
-        />
-      ))}
+    <MainStack>
+      <Message quarterHourDifference={quarterHourDifference} />
+      <DayList
+        days={days}
+        getUpdateHours={getUpdateDayActuaQuarterlHours}
+        editable={true}
+      />
+      <Button
+        color="info"
+        onClick={previewNextPayPeriod}
+        variant="contained"
+        fullWidth
+        size="large"
+        disabled={!nextPayPeriod}
+      >
+        <Typography>Preview next pay period</Typography>
+      </Button>
 
       <Button
         color="warning"
@@ -63,7 +69,7 @@ function Main(props: WithPayPeriodProps) {
       >
         <Typography>Reset</Typography>
       </Button>
-    </Stack>
+    </MainStack>
   );
 }
 

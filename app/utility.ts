@@ -1,4 +1,5 @@
 import {
+  convertHoursToQuarterHours,
   THURSDAY,
   FRIDAY,
   SATURDAY,
@@ -14,6 +15,7 @@ import {
   SEPTEMBER,
   TUESDAY,
   TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS,
+  LAST_DATE_OF_PAY_PERIOD,
 } from "./constants";
 
 function isWeekday(date: Date) {
@@ -78,31 +80,32 @@ function calculateHolidaysForDate(targetDate: Date): number[] {
   return holidays;
 }
 
-function getFirstAndLastDays(today: Date) {
+function getFirstAndLastDays(referenceDate: Date) {
   let firstDate;
   let lastDate;
 
-  if (today.getDate() <= 15) {
-    firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    lastDate = new Date(today.getFullYear(), today.getMonth(), 15);
+  if (referenceDate.getDate() <= LAST_DATE_OF_PAY_PERIOD) {
+    firstDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      1
+    );
+    lastDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      LAST_DATE_OF_PAY_PERIOD
+    );
   } else {
-    const lastWeekdayOfMonth = new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
+    firstDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      LAST_DATE_OF_PAY_PERIOD + 1
+    );
+    lastDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth() + 1,
       0
     );
-
-    while (!isWeekday(lastWeekdayOfMonth)) {
-      lastWeekdayOfMonth.setDate(lastWeekdayOfMonth.getDate() - 1);
-    }
-
-    if (today.getDate() <= lastWeekdayOfMonth.getDate()) {
-      firstDate = new Date(today.getFullYear(), today.getMonth(), 16);
-      lastDate = lastWeekdayOfMonth;
-    } else {
-      firstDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-      lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 15);
-    }
   }
 
   return { firstDate, lastDate };
@@ -172,22 +175,28 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   const reverseFridays = Array.from(orderedFridays).reverse();
 
   const deficit: TimeDifference[] = [
-    { limit: 8 * 4, indexes: orderedFridays },
-    { limit: 10 * 4, indexes: sortedWeekDays },
-    { limit: 10 * 4, indexes: orderedFridays },
-    { limit: 12 * 4, indexes: [...sortedWeekDays, ...orderedFridays] },
+    { limit: convertHoursToQuarterHours(8), indexes: orderedFridays },
+    { limit: convertHoursToQuarterHours(10), indexes: sortedWeekDays },
+    { limit: convertHoursToQuarterHours(10), indexes: orderedFridays },
+    {
+      limit: convertHoursToQuarterHours(12),
+      indexes: [...sortedWeekDays, ...orderedFridays],
+    },
   ];
   const surplus: TimeDifference[] = [
-    { limit: 6 * 4, indexes: reverseWeekDays },
-    { limit: 4 * 4, indexes: [...reverseFridays, ...reverseWeekDays] },
+    { limit: convertHoursToQuarterHours(6), indexes: reverseWeekDays },
+    {
+      limit: convertHoursToQuarterHours(4),
+      indexes: [...reverseFridays, ...reverseWeekDays],
+    },
   ];
 
   return { deficit, surplus };
 }
 
-export function constructNewPayPeriod(): PayPeriod {
+export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
   console.log("creating new pay period");
-  const { firstDate, lastDate } = getFirstAndLastDays(new Date());
+  const { firstDate, lastDate } = getFirstAndLastDays(referenceDate);
 
   const days: Day[] = [];
 
@@ -277,7 +286,8 @@ function iterateHours(
 export function recalculatePayPeriod(
   existingPayPeriodWithNewDays: PayPeriod
 ): PayPeriod {
-  const requiredQuarterHours = existingPayPeriodWithNewDays.days.length * 8 * 4;
+  const requiredQuarterHours =
+    existingPayPeriodWithNewDays.days.length * convertHoursToQuarterHours(8);
   const workingQuarterHours = existingPayPeriodWithNewDays.days.reduce(
     (acc, day) => acc + (day.actualQuarterHours || day.targetQuarterHours),
     0
