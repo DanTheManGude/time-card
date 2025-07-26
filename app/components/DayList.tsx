@@ -50,10 +50,14 @@ function DayRow(props: DayRowProps) {
     };
   }, [editable, updateHours]);
 
+  const gridSize = useMemo(() => {
+    return editable ? 4 : 6;
+  }, [editable]);
+
   return (
     <Paper elevation={3} sx={{ paddingY: 1.5, paddingX: 1 }}>
       <Grid2 container spacing={1} alignItems="end">
-        <Grid2 size={4}>
+        <Grid2 size={gridSize}>
           <Typography
             color={
               day.date.getDate() === new Date().getDate()
@@ -68,7 +72,7 @@ function DayRow(props: DayRowProps) {
             })}
           </Typography>
         </Grid2>
-        <Grid2 size={4}>
+        <Grid2 size={gridSize}>
           <Typography
             color={
               quarterHourDifference === 0
@@ -81,20 +85,22 @@ function DayRow(props: DayRowProps) {
             {expectedHoursMessage}
           </Typography>
         </Grid2>
-        <Grid2 size={4}>
-          <FormControl fullWidth disabled={day.isHoliday || !editable}>
-            <NativeSelect
-              defaultValue={day.actualQuarterHours}
-              inputProps={{
-                name: "actualHours",
-                id: `actualHoursSelect-${day.date.getTime()}`,
-              }}
-              onChange={onHourChange}
-            >
-              {actualHoursOptions}
-            </NativeSelect>
-          </FormControl>
-        </Grid2>
+        {editable && (
+          <Grid2 size={gridSize}>
+            <FormControl fullWidth disabled={day.isHoliday || !editable}>
+              <NativeSelect
+                defaultValue={day.actualQuarterHours}
+                inputProps={{
+                  name: "actualHours",
+                  id: `actualHoursSelect-${day.date.getTime()}`,
+                }}
+                onChange={onHourChange}
+              >
+                {actualHoursOptions}
+              </NativeSelect>
+            </FormControl>
+          </Grid2>
+        )}
       </Grid2>
     </Paper>
   );
