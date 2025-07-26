@@ -8,7 +8,7 @@ import NextPayperiod from "./NextPayperiod";
 import DayList from "./DayList";
 
 function Main(props: WithPayPeriodProps) {
-  const { payPeriod, updateDay, resetPayPeriod } = props;
+  const { payPeriod, updateDay, resetPayPeriod, nextPayPeriod } = props;
   const { days, quarterHourDifference } = payPeriod;
 
   const [isPreviewNext, setIsPreviewNext] = useState(false);
@@ -33,11 +33,11 @@ function Main(props: WithPayPeriodProps) {
     [updateDay]
   );
 
-  if (isPreviewNext) {
+  if (isPreviewNext && nextPayPeriod) {
     return (
       <NextPayperiod
         viewCurrentPayPeriod={viewCurrentPayPeriod}
-        nextPayPeriod={payPeriod}
+        nextPayPeriod={nextPayPeriod}
       />
     );
   }
@@ -56,6 +56,7 @@ function Main(props: WithPayPeriodProps) {
         variant="contained"
         fullWidth
         size="large"
+        disabled={!nextPayPeriod}
       >
         <Typography>Preview next pay period</Typography>
       </Button>
