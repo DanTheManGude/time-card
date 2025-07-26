@@ -13,6 +13,7 @@ function Main(props: WithPayPeriodProps) {
 
   const [isPreviewNext, setIsPreviewNext] = useState(false);
   const previewNextPayPeriod = useCallback(() => {
+    scrollTo(0, 0);
     setIsPreviewNext(true);
   }, []);
   const viewCurrentPayPeriod = useCallback(() => {
