@@ -5,19 +5,19 @@ import withPayPeriod from "./withPayPeriod";
 import DayRow from "./dayRow";
 import Message from "./Message";
 import MainStack from "./MainStack";
+import NextPayperiod from "./NextPayperiod";
 
 function Main(props: WithPayPeriodProps) {
   const { payPeriod, updateDay, resetPayPeriod } = props;
   const { days, quarterHourDifference } = payPeriod;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPreviewNext, setIsPreviewNext] = useState(false);
   const previewNextPayPeriod = useCallback(() => {
     setIsPreviewNext(true);
   }, []);
-  // const viewCurrentPayPeriod = useCallback(() => {
-  //   setIsPreviewNext(false);
-  // }, []);
+  const viewCurrentPayPeriod = useCallback(() => {
+    setIsPreviewNext(false);
+  }, []);
 
   const getUpdateDayActuaQuarterlHours = useCallback(
     (index: number) => (newActualQuarterHours: number) => {
@@ -31,6 +31,10 @@ function Main(props: WithPayPeriodProps) {
     },
     [updateDay]
   );
+
+  if (isPreviewNext) {
+    return <NextPayperiod viewCurrentPayPeriod={viewCurrentPayPeriod} />;
+  }
 
   return (
     <MainStack>
