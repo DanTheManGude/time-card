@@ -51,3 +51,5 @@ export const weekDayTimePriority = [
   (acc, weekDay, index) => ({ ...acc, [weekDay]: index }),
   {}
 );
+
+export const LAST_DATE_OF_PAY_PERIOD = 15;

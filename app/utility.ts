@@ -14,6 +14,7 @@ import {
   SEPTEMBER,
   TUESDAY,
   TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS,
+  LAST_DATE_OF_PAY_PERIOD,
 } from "./constants";
 
 function isWeekday(date: Date) {
@@ -78,31 +79,32 @@ function calculateHolidaysForDate(targetDate: Date): number[] {
   return holidays;
 }
 
-function getFirstAndLastDays(today: Date) {
+function getFirstAndLastDays(referenceDate: Date) {
   let firstDate;
   let lastDate;
 
-  if (today.getDate() <= 15) {
-    firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    lastDate = new Date(today.getFullYear(), today.getMonth(), 15);
+  if (referenceDate.getDate() <= LAST_DATE_OF_PAY_PERIOD) {
+    firstDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      1
+    );
+    lastDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      LAST_DATE_OF_PAY_PERIOD
+    );
   } else {
-    const lastWeekdayOfMonth = new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
+    firstDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      LAST_DATE_OF_PAY_PERIOD + 1
+    );
+    lastDate = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth() + 1,
       0
     );
-
-    while (!isWeekday(lastWeekdayOfMonth)) {
-      lastWeekdayOfMonth.setDate(lastWeekdayOfMonth.getDate() - 1);
-    }
-
-    if (today.getDate() <= lastWeekdayOfMonth.getDate()) {
-      firstDate = new Date(today.getFullYear(), today.getMonth(), 16);
-      lastDate = lastWeekdayOfMonth;
-    } else {
-      firstDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-      lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 15);
-    }
   }
 
   return { firstDate, lastDate };
