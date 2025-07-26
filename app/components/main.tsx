@@ -1,15 +1,21 @@
 "use client";
-
-import { Button, Stack, Typography, TypographyProps } from "@mui/material";
-
+import { useCallback, useState } from "react";
+import { Button, Stack, Typography } from "@mui/material";
 import withPayPeriod from "./withPayPeriod";
 import DayRow from "./dayRow";
-import { useCallback } from "react";
-import { convertQuarterHoursToString } from "../utility";
+import Message from "./Message";
 
 function Main(props: WithPayPeriodProps) {
   const { payPeriod, updateDay, resetPayPeriod } = props;
   const { days, quarterHourDifference } = payPeriod;
+
+  const [isPreviewNext, setIsPreviewNext] = useState(false);
+  const previewNextPayPeriod = useCallback(() => {
+    setIsPreviewNext(true);
+  }, []);
+  const viewCurrentPayPeriod = useCallback(() => {
+    setIsPreviewNext(false);
+  }, []);
 
   const getUpdateDayActuaQuarterlHours = useCallback(
     (index: number) => (newActualQuarterHours: number) => {
@@ -24,29 +30,9 @@ function Main(props: WithPayPeriodProps) {
     [updateDay]
   );
 
-  const renderMessage = () => {
-    let color: TypographyProps["color"];
-    let message: string;
-
-    if (quarterHourDifference === 0) {
-      color = "info";
-      message = "You are on track.";
-    } else {
-      message = `You are ${
-        quarterHourDifference > 0 ? "ahead" : "behind"
-      } by ${convertQuarterHoursToString(Math.abs(quarterHourDifference))}`;
-    }
-
-    return (
-      <Typography textAlign="center" variant="h6" color={color}>
-        {message}
-      </Typography>
-    );
-  };
-
   return (
     <Stack direction={"column"} width={"100%"} paddingY={2} spacing={2}>
-      {renderMessage()}
+      <Message quarterHourDifference={quarterHourDifference} />
       {days.map((day, index) => (
         <DayRow
           day={day}
@@ -54,6 +40,15 @@ function Main(props: WithPayPeriodProps) {
           updateHours={getUpdateDayActuaQuarterlHours(index)}
         />
       ))}
+      <Button
+        color="info"
+        onClick={previewNextPayPeriod}
+        variant="contained"
+        fullWidth
+        size="large"
+      >
+        <Typography>Preview next</Typography>
+      </Button>
 
       <Button
         color="warning"
