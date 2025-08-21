@@ -81,29 +81,37 @@ function calculateHolidaysForDate(targetDate: Date): number[] {
 }
 
 function getFirstAndLastDays(referenceDate: Date) {
+  const firstWeekdayFromReferenceDate = new Date(referenceDate);
+
+  while (!isWeekday(firstWeekdayFromReferenceDate)) {
+    firstWeekdayFromReferenceDate.setDate(
+      firstWeekdayFromReferenceDate.getDate() + 1
+    );
+  }
+
   let firstDate;
   let lastDate;
 
-  if (referenceDate.getDate() <= LAST_DATE_OF_PAY_PERIOD) {
+  if (firstWeekdayFromReferenceDate.getDate() <= LAST_DATE_OF_PAY_PERIOD) {
     firstDate = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth(),
+      firstWeekdayFromReferenceDate.getFullYear(),
+      firstWeekdayFromReferenceDate.getMonth(),
       1
     );
     lastDate = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth(),
+      firstWeekdayFromReferenceDate.getFullYear(),
+      firstWeekdayFromReferenceDate.getMonth(),
       LAST_DATE_OF_PAY_PERIOD
     );
   } else {
     firstDate = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth(),
+      firstWeekdayFromReferenceDate.getFullYear(),
+      firstWeekdayFromReferenceDate.getMonth(),
       LAST_DATE_OF_PAY_PERIOD + 1
     );
     lastDate = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth() + 1,
+      firstWeekdayFromReferenceDate.getFullYear(),
+      firstWeekdayFromReferenceDate.getMonth() + 1,
       0
     );
   }
