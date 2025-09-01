@@ -15,8 +15,6 @@ export const convertHoursToQuarterHours = (
 ) => hours * 4 + quarterHours;
 
 export const NORMAL_ESTIMATED_QUARTER_HOURS = convertHoursToQuarterHours(8, 2);
-export const TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS =
-  convertHoursToQuarterHours(8, 1);
 export const FRIDAY_ESTIMATED_QUARTER_HOURS = convertHoursToQuarterHours(6);
 export const HOLIDAY_QUARTER_HOURS = convertHoursToQuarterHours(8);
 

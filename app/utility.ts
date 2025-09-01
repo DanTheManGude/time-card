@@ -13,8 +13,6 @@ import {
   NOVEMBER,
   MAY,
   SEPTEMBER,
-  TUESDAY,
-  TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS,
   LAST_DATE_OF_PAY_PERIOD,
 } from "./constants";
 
@@ -121,9 +119,6 @@ function getFirstAndLastDays(referenceDate: Date) {
 
 const getEstimatedHoursForDay = (day: number) => {
   switch (day) {
-    case TUESDAY:
-    case THURSDAY:
-      return TUESDAY_THURSDAY_ESTIMATED_QUARTER_HOURS;
     case FRIDAY:
       return FRIDAY_ESTIMATED_QUARTER_HOURS;
     default:
