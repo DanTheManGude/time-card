@@ -1,7 +1,7 @@
 import { convertHoursToQuarterHours } from "../constants";
 import { convertQuarterHoursToString } from "../utility";
 
-const startTime = convertHoursToQuarterHours(4);
+const startTime = convertHoursToQuarterHours(0);
 const endTime = convertHoursToQuarterHours(12);
 
 export const actualHoursOptions = [
