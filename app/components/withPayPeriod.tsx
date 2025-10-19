@@ -60,10 +60,15 @@ export default function withPayPeriod(
         return;
       }
       const nextPayPeriodStart = new Date(payPeriod.lastDate);
+
+      if (nextPayPeriod && nextPayPeriod.lastDate >= nextPayPeriodStart) {
+        return;
+      }
+
       nextPayPeriodStart.setDate(payPeriod.lastDate.getDate() + 1);
 
       setNextPayPeriod(constructNewPayPeriod(nextPayPeriodStart));
-    }, [payPeriod]);
+    }, [payPeriod, nextPayPeriod]);
 
     const updateDay = (getNewDay: (existingDay: Day) => Day, index: number) => {
       if (!payPeriod) {
