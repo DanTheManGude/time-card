@@ -185,11 +185,19 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
       limit: convertHoursToQuarterHours(12),
       indexes: [...sortedWeekDays, ...orderedFridays],
     },
+    {
+      limit: convertHoursToQuarterHours(30),
+      indexes: [...sortedWeekDays, ...orderedFridays],
+    },
   ];
   const surplus: TimeDifference[] = [
     { limit: convertHoursToQuarterHours(6), indexes: reverseWeekDays },
     {
       limit: convertHoursToQuarterHours(4),
+      indexes: [...reverseFridays, ...reverseWeekDays],
+    },
+    {
+      limit: convertHoursToQuarterHours(0),
       indexes: [...reverseFridays, ...reverseWeekDays],
     },
   ];
