@@ -210,15 +210,22 @@ function constructTimeDifferenceEntries(days: Day[]): TimeDifferenceEntries {
     deficit: {
       differences: deficitTimeDifferences,
       incrementValue: 1,
-      comparisonOperation: (variable, constant) => variable >= constant,
     },
     surplus: {
       differences: surplusTimeDifferences,
       incrementValue: -1,
-      comparisonOperation: (variable, constant) => variable <= constant,
     },
   };
 }
+
+const deficitComparisonOperation: TimeDifferenceComparisonOperation = (
+  variable,
+  constant
+) => variable >= constant;
+const surplusComparisonOperation: TimeDifferenceComparisonOperation = (
+  variable,
+  constant
+) => variable <= constant;
 
 export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
   console.log("creating new pay period with reference date", referenceDate);
@@ -272,14 +279,11 @@ export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
 function iterateHours(
   days: Day[],
   requiredTimeChange: number,
-  timeDifferenceEntry: TimeDifferenceEntry
+  timeDifferenceEntry: TimeDifferenceEntry,
+  comparisonOperation: TimeDifferenceComparisonOperation
 ) {
   let elapsedTimeChange = 0;
-  const {
-    differences: timeDifferences,
-    incrementValue,
-    comparisonOperation,
-  } = timeDifferenceEntry;
+  const { differences: timeDifferences, incrementValue } = timeDifferenceEntry;
 
   for (const { limit, indexes } of timeDifferences) {
     let availableIndexes = indexes.filter(
@@ -331,16 +335,24 @@ export function recalculatePayPeriod(
 
   if (quarterHourDifference !== 0) {
     let timeDifferenceEntry: TimeDifferenceEntry;
+    let comparisonOperation: TimeDifferenceComparisonOperation;
 
     if (quarterHourDifference > 0) {
       timeDifferenceEntry =
         existingPayPeriodWithNewDays.timeDifferenceEntries.surplus;
+      comparisonOperation = surplusComparisonOperation;
     } else {
       timeDifferenceEntry =
         existingPayPeriodWithNewDays.timeDifferenceEntries.deficit;
+      comparisonOperation = deficitComparisonOperation;
     }
 
-    iterateHours(modifiedDays, quarterHourDifference, timeDifferenceEntry);
+    iterateHours(
+      modifiedDays,
+      quarterHourDifference,
+      timeDifferenceEntry,
+      comparisonOperation
+    );
   }
 
   return {

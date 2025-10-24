@@ -25,7 +25,6 @@ type TimeDifferenceComparisonOperation = (
 type TimeDifferenceEntry = {
   differences: TimeDifference[];
   incrementValue: TimeDifferenceIncrementValue;
-  comparisonOperation: TimeDifferenceComparisonOperation;
 };
 
 type TimeDifferenceCategory = "deficit" | "surplus";
