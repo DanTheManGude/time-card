@@ -283,7 +283,7 @@ function iterateHours(
 
   for (const { limit, indexes } of timeDifferences) {
     let availableIndexes = indexes.filter(
-      (index) => !days[index].actualQuarterHours
+      (index) => days[index].actualQuarterHours !== undefined
     );
     let hasReachedLimit = availableIndexes.length === 0;
 
@@ -319,14 +319,14 @@ export function recalculatePayPeriod(
   const requiredQuarterHours =
     existingPayPeriodWithNewDays.days.length * convertHoursToQuarterHours(8);
   const workingQuarterHours = existingPayPeriodWithNewDays.days.reduce(
-    (acc, day) => acc + (day.actualQuarterHours || day.targetQuarterHours),
+    (acc, day) => acc + (day.actualQuarterHours ?? day.targetQuarterHours),
     0
   );
   const quarterHourDifference = workingQuarterHours - requiredQuarterHours;
 
   const modifiedDays = existingPayPeriodWithNewDays.days.map((day) => ({
     ...day,
-    estimatedQuarterHours: day.actualQuarterHours || day.targetQuarterHours,
+    estimatedQuarterHours: day.actualQuarterHours ?? day.targetQuarterHours,
   }));
 
   if (quarterHourDifference !== 0) {

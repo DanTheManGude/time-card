@@ -41,7 +41,7 @@ function DayRow(props: DayRowProps) {
   const quarterHourDifference = useMemo(
     () =>
       day.targetQuarterHours -
-      (day.actualQuarterHours || day.estimatedQuarterHours),
+      (day.actualQuarterHours ?? day.estimatedQuarterHours),
     [day.actualQuarterHours, day.estimatedQuarterHours, day.targetQuarterHours]
   );
 
