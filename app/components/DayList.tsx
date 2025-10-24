@@ -49,7 +49,7 @@ function DayRow(props: DayRowProps) {
     const estimatedHours = convertQuarterHoursToString(
       day.estimatedQuarterHours
     );
-    const hourDifference = buildHoursDifference(quarterHourDifference);
+    const hourDifference = buildHoursDifference(quarterHourDifference * -1);
 
     return `${estimatedHours} ${hourDifference}`;
   }, [day.estimatedQuarterHours, quarterHourDifference]);
