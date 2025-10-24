@@ -186,7 +186,7 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
       indexes: [...sortedWeekDays, ...orderedFridays],
     },
     {
-      limit: convertHoursToQuarterHours(30),
+      limit: convertHoursToQuarterHours(16),
       indexes: [...sortedWeekDays, ...orderedFridays],
     },
   ];
@@ -198,6 +198,10 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
     },
     {
       limit: convertHoursToQuarterHours(0),
+      indexes: [...reverseFridays, ...reverseWeekDays],
+    },
+    {
+      limit: convertHoursToQuarterHours(-12),
       indexes: [...reverseFridays, ...reverseWeekDays],
     },
   ];
@@ -263,7 +267,7 @@ function iterateHours(
   let elapsedTimeChange = 0;
 
   for (const { limit, indexes } of timeDifferences) {
-    const availableIndexes = indexes.filter(
+    let availableIndexes = indexes.filter(
       (index) => !days[index].actualQuarterHours
     );
     let hasReachedLimit = availableIndexes.length === 0;
@@ -277,7 +281,7 @@ function iterateHours(
         const existingQuarterHours = days[index].estimatedQuarterHours;
 
         if (existingQuarterHours === limit) {
-          availableIndexes.filter((i) => i !== index);
+          availableIndexes = availableIndexes.filter((i) => i !== index);
           continue;
         }
 
