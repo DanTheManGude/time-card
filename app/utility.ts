@@ -141,7 +141,7 @@ function sortWeekDays(days: Day[], indexOffset: number): number[] {
     );
 }
 
-function constructTimeDifferences(days: Day[]): TimeDifferences {
+function constructTimeDifferenceEntries(days: Day[]): TimeDifferenceEntries {
   const sortedWeekDays: number[] = [];
   const orderedFridays: number[] = [];
 
@@ -177,7 +177,7 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
   const reverseWeekDays = Array.from(sortedWeekDays).reverse();
   const reverseFridays = Array.from(orderedFridays).reverse();
 
-  const deficit: TimeDifference[] = [
+  const deficitTimeDifferences: TimeDifference[] = [
     { limit: convertHoursToQuarterHours(8), indexes: orderedFridays },
     { limit: convertHoursToQuarterHours(10), indexes: sortedWeekDays },
     { limit: convertHoursToQuarterHours(10), indexes: orderedFridays },
@@ -190,7 +190,7 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
       indexes: [...sortedWeekDays, ...orderedFridays],
     },
   ];
-  const surplus: TimeDifference[] = [
+  const surplusTimeDifferences: TimeDifference[] = [
     { limit: convertHoursToQuarterHours(6), indexes: reverseWeekDays },
     {
       limit: convertHoursToQuarterHours(4),
@@ -206,7 +206,18 @@ function constructTimeDifferences(days: Day[]): TimeDifferences {
     },
   ];
 
-  return { deficit, surplus };
+  return {
+    deficit: {
+      differences: deficitTimeDifferences,
+      incrementValue: 1,
+      comparisonOperation: (variable, constant) => variable <= constant,
+    },
+    surplus: {
+      differences: surplusTimeDifferences,
+      incrementValue: -1,
+      comparisonOperation: (variable, constant) => variable >= constant,
+    },
+  };
 }
 
 export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
@@ -247,13 +258,13 @@ export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
     throw new Error("No Days in new pay period");
   }
 
-  const timeDifferences = constructTimeDifferences(days);
+  const timeDifferenceEntries = constructTimeDifferenceEntries(days);
 
   return recalculatePayPeriod({
     days,
     lastDate: lastDateInPayPeriod,
     quarterHourDifference: 0,
-    timeDifferences,
+    timeDifferenceEntries,
   });
 }
 
@@ -261,10 +272,14 @@ export function constructNewPayPeriod(referenceDate: Date): PayPeriod {
 function iterateHours(
   days: Day[],
   requiredTimeChange: number,
-  timeDifferences: TimeDifference[],
-  timeChangeValue: -1 | 1
+  timeDifferenceEntry: TimeDifferenceEntry
 ) {
   let elapsedTimeChange = 0;
+  const {
+    differences: timeDifferences,
+    incrementValue,
+    comparisonOperation,
+  } = timeDifferenceEntry;
 
   for (const { limit, indexes } of timeDifferences) {
     let availableIndexes = indexes.filter(
@@ -286,10 +301,10 @@ function iterateHours(
         }
 
         days[index].estimatedQuarterHours =
-          existingQuarterHours + timeChangeValue;
-        elapsedTimeChange = elapsedTimeChange - timeChangeValue;
+          existingQuarterHours + incrementValue;
+        elapsedTimeChange = elapsedTimeChange - incrementValue;
 
-        if (elapsedTimeChange === requiredTimeChange) {
+        if (comparisonOperation(elapsedTimeChange, requiredTimeChange)) {
           return;
         }
       }
@@ -315,23 +330,17 @@ export function recalculatePayPeriod(
   }));
 
   if (quarterHourDifference !== 0) {
-    let timeDifferences: TimeDifference[];
-    let timeChangeValue: -1 | 1;
+    let timeDifferenceEntry: TimeDifferenceEntry;
 
     if (quarterHourDifference > 0) {
-      timeDifferences = existingPayPeriodWithNewDays.timeDifferences.surplus;
-      timeChangeValue = -1;
+      timeDifferenceEntry =
+        existingPayPeriodWithNewDays.timeDifferenceEntries.surplus;
     } else {
-      timeDifferences = existingPayPeriodWithNewDays.timeDifferences.deficit;
-      timeChangeValue = 1;
+      timeDifferenceEntry =
+        existingPayPeriodWithNewDays.timeDifferenceEntries.deficit;
     }
 
-    iterateHours(
-      modifiedDays,
-      quarterHourDifference,
-      timeDifferences,
-      timeChangeValue
-    );
+    iterateHours(modifiedDays, quarterHourDifference, timeDifferenceEntry);
   }
 
   return {

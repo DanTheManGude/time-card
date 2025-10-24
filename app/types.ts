@@ -15,16 +15,30 @@ type TimeDifference = {
   indexes: number[];
 };
 
-type TimeDifferences = {
-  deficit: TimeDifference[];
-  surplus: TimeDifference[];
+type TimeDifferenceIncrementValue = 1 | -1;
+
+type TimeDifferenceComparisonOperation = (
+  variable: number,
+  constant: number
+) => boolean;
+
+type TimeDifferenceEntry = {
+  differences: TimeDifference[];
+  incrementValue: TimeDifferenceIncrementValue;
+  comparisonOperation: TimeDifferenceComparisonOperation;
+};
+
+type TimeDifferenceCategory = "deficit" | "surplus";
+
+type TimeDifferenceEntries = {
+  [key in TimeDifferenceCategory]: TimeDifferenceEntry;
 };
 
 type PayPeriod = {
   days: Day[];
   lastDate: Date;
   quarterHourDifference: number;
-  timeDifferences: TimeDifferences;
+  timeDifferenceEntries: TimeDifferenceEntries;
 };
 
 type ParsedSavedPayPeriod = Modify<
