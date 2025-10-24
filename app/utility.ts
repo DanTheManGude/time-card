@@ -341,10 +341,30 @@ export function recalculatePayPeriod(
   };
 }
 
-export function convertQuarterHoursToString(quarterHours: number) {
-  const fullHours = Math.floor(quarterHours / 4);
-  const remainingQuarters = quarterHours % 4;
+export function convertQuarterHoursToString(
+  quarterHours: number,
+  includeSignIfPositive: boolean = false
+) {
+  const sign =
+    quarterHours === 0
+      ? ""
+      : quarterHours < 0
+      ? "-"
+      : includeSignIfPositive
+      ? "+"
+      : "";
+  const absoluteQuarterHours = Math.abs(quarterHours);
+  const fullHours = Math.floor(absoluteQuarterHours / 4);
+  const remainingQuarters = absoluteQuarterHours % 4;
   const quarterHoursAsMinutes = String(remainingQuarters * 15).padStart(2, "0");
 
-  return `${fullHours}:${quarterHoursAsMinutes}`;
+  return `${sign}${fullHours}:${quarterHoursAsMinutes}`;
+}
+
+export function buildHoursDifference(quarterHourDifference: number) {
+  if (quarterHourDifference === 0) {
+    return "";
+  }
+
+  return `(${convertQuarterHoursToString(quarterHourDifference, true)})`;
 }
