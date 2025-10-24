@@ -210,12 +210,12 @@ function constructTimeDifferenceEntries(days: Day[]): TimeDifferenceEntries {
     deficit: {
       differences: deficitTimeDifferences,
       incrementValue: 1,
-      comparisonOperation: (variable, constant) => variable <= constant,
+      comparisonOperation: (variable, constant) => variable >= constant,
     },
     surplus: {
       differences: surplusTimeDifferences,
       incrementValue: -1,
-      comparisonOperation: (variable, constant) => variable >= constant,
+      comparisonOperation: (variable, constant) => variable <= constant,
     },
   };
 }
@@ -295,7 +295,7 @@ function iterateHours(
 
         const existingQuarterHours = days[index].estimatedQuarterHours;
 
-        if (existingQuarterHours === limit) {
+        if (comparisonOperation(existingQuarterHours, limit)) {
           availableIndexes = availableIndexes.filter((i) => i !== index);
           continue;
         }
@@ -304,7 +304,7 @@ function iterateHours(
           existingQuarterHours + incrementValue;
         elapsedTimeChange = elapsedTimeChange - incrementValue;
 
-        if (comparisonOperation(elapsedTimeChange, requiredTimeChange)) {
+        if (elapsedTimeChange === requiredTimeChange) {
           return;
         }
       }
