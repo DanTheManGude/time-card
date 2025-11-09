@@ -5,7 +5,7 @@ const startTime = convertHoursToQuarterHours(0);
 const endTime = convertHoursToQuarterHours(12);
 
 export const actualHoursOptions = [
-  <option value={0} key={"NOT_SET"}>
+  <option value={-1} key={"NOT_SET"}>
     {"Not set"}
   </option>,
   ...Array(endTime + 1 - startTime)

@@ -14,7 +14,7 @@ import {
 } from "../utility";
 import { actualHoursOptions } from "./utility";
 
-type UpdateHours = (newActualQuarterHours: number) => void;
+type UpdateHours = (newActualQuarterHours?: number) => void;
 
 type DayListProps = {
   days: Day[];
@@ -60,7 +60,9 @@ function DayRow(props: DayRowProps) {
         return;
       }
 
-      updateHours(Number(event.target.value));
+      const hours = Number(event.target.value);
+
+      updateHours(hours < 0 ? undefined : hours);
     },
     [editable, updateHours]
   );
