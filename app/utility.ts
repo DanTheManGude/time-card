@@ -287,7 +287,7 @@ function iterateHours(
 
   for (const { limit, indexes } of timeDifferences) {
     let availableIndexes = indexes.filter(
-      (index) => days[index].actualQuarterHours !== undefined
+      (index) => days[index].actualQuarterHours === undefined
     );
     let hasReachedLimit = availableIndexes.length === 0;
 
