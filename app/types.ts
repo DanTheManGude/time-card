@@ -33,11 +33,14 @@ type TimeDifferenceEntries = {
   [key in TimeDifferenceCategory]: TimeDifferenceEntry;
 };
 
+type PayPeriodVersion = "v1";
+
 type PayPeriod = {
   days: Day[];
   lastDate: Date;
   quarterHourDifference: number;
   timeDifferenceEntries: TimeDifferenceEntries;
+  version: PayPeriodVersion;
 };
 
 type ParsedSavedPayPeriod = Modify<

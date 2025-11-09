@@ -1,8 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { constructNewPayPeriod, recalculatePayPeriod } from "../utility";
-import { LOCAL_STORAGE_KEY } from "../constants";
+import {
+  constructNewPayPeriod,
+  getParsedSavedPayPeriod,
+  recalculatePayPeriod,
+  removeSavedPayPeriod,
+  savePayPeriodToLocalStorage,
+} from "../utility";
 
 export default function withPayPeriod(
   WrappedComponent: React.ComponentType<WithPayPeriodProps>
@@ -13,31 +18,17 @@ export default function withPayPeriod(
     const [loaded, setLoaded] = useState<boolean>(false);
 
     useEffect(() => {
+      let savedFullPayPeriod: PayPeriod | undefined;
       try {
-        const maybeSavedPayPeriodRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-        if (maybeSavedPayPeriodRaw) {
-          const parsedSavedPayPeriod: ParsedSavedPayPeriod = JSON.parse(
-            maybeSavedPayPeriodRaw
-          );
-
-          const convertedLastDate = new Date(parsedSavedPayPeriod.lastDate);
-          const dayAfterLast = new Date(convertedLastDate);
-          dayAfterLast.setDate(convertedLastDate.getDate() + 1);
-
-          if (dayAfterLast > new Date()) {
-            setPayPeriod({
-              ...parsedSavedPayPeriod,
-              days: parsedSavedPayPeriod.days.map((savedDay) => ({
-                ...savedDay,
-                date: new Date(savedDay.date),
-              })),
-              lastDate: convertedLastDate,
-            });
-          }
-        }
+        savedFullPayPeriod = getParsedSavedPayPeriod();
       } catch (error) {
         console.error(error);
+      }
+
+      if (savedFullPayPeriod) {
+        setPayPeriod(savedFullPayPeriod);
+      } else {
+        removeSavedPayPeriod();
       }
 
       setLoaded(true);
@@ -48,8 +39,7 @@ export default function withPayPeriod(
         return;
       }
       if (payPeriod) {
-        console.log("Saving pay period to local storage", payPeriod);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payPeriod));
+        savePayPeriodToLocalStorage(payPeriod);
       } else {
         setPayPeriod(constructNewPayPeriod(new Date()));
       }
@@ -91,8 +81,7 @@ export default function withPayPeriod(
 
     const resetPayPeriod = useCallback(() => {
       setPayPeriod(undefined);
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-      console.log("Pay period reset");
+      removeSavedPayPeriod();
     }, [setPayPeriod]);
 
     if (!payPeriod) {

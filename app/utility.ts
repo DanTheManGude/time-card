@@ -14,6 +14,8 @@ import {
   MAY,
   SEPTEMBER,
   LAST_DATE_OF_PAY_PERIOD,
+  LOCAL_STORAGE_KEY,
+  PAY_PERIOD_VERSION,
 } from "./constants";
 
 function isWeekday(date: Date) {
@@ -318,7 +320,10 @@ function iterateHours(
 }
 
 export function recalculatePayPeriod(
-  existingPayPeriodWithNewDays: PayPeriod
+  existingPayPeriodWithNewDays: Modify<
+    PayPeriod,
+    { version?: PayPeriodVersion }
+  >
 ): PayPeriod {
   const requiredQuarterHours =
     existingPayPeriodWithNewDays.days.length * convertHoursToQuarterHours(8);
@@ -359,6 +364,7 @@ export function recalculatePayPeriod(
     ...existingPayPeriodWithNewDays,
     days: modifiedDays,
     quarterHourDifference,
+    version: PAY_PERIOD_VERSION,
   };
 }
 
@@ -388,4 +394,47 @@ export function buildHoursDifference(quarterHourDifference: number) {
   }
 
   return `(${convertQuarterHoursToString(quarterHourDifference, true)})`;
+}
+
+export function removeSavedPayPeriod() {
+  localStorage.removeItem(LOCAL_STORAGE_KEY);
+  console.log("Pay period reset");
+}
+
+export function getParsedSavedPayPeriod(): PayPeriod | undefined {
+  const maybeSavedPayPeriodRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+  if (maybeSavedPayPeriodRaw) {
+    const parsedSavedPayPeriod: ParsedSavedPayPeriod = JSON.parse(
+      maybeSavedPayPeriodRaw
+    );
+
+    if (parsedSavedPayPeriod.version !== "v1") {
+      debugger;
+      console.warn(
+        "Saved pay period version is outdated or invalid, removing saved pay period"
+      );
+      return;
+    }
+
+    const convertedLastDate = new Date(parsedSavedPayPeriod.lastDate);
+    const dayAfterLast = new Date(convertedLastDate);
+    dayAfterLast.setDate(convertedLastDate.getDate() + 1);
+
+    if (dayAfterLast > new Date()) {
+      return {
+        ...parsedSavedPayPeriod,
+        days: parsedSavedPayPeriod.days.map((savedDay) => ({
+          ...savedDay,
+          date: new Date(savedDay.date),
+        })),
+        lastDate: convertedLastDate,
+      };
+    }
+  }
+}
+
+export function savePayPeriodToLocalStorage(payPeriod: PayPeriod) {
+  console.log("Saving pay period to local storage", payPeriod);
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payPeriod));
 }

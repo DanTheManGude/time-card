@@ -9,6 +9,8 @@ export const fontFamilies = [
 
 export const LOCAL_STORAGE_KEY = "TIME_CARD_PAY_PERIOD";
 
+export const PAY_PERIOD_VERSION: PayPeriodVersion = "v1";
+
 export const convertHoursToQuarterHours = (
   hours: number,
   quarterHours: number = 0
