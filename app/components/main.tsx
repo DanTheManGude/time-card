@@ -6,6 +6,7 @@ import Message from "./Message";
 import MainStack from "./MainStack";
 import NextPayperiod from "./NextPayperiod";
 import DayList from "./DayList";
+import Countdown from "./Countdown";
 
 function Main(props: WithPayPeriodProps) {
   const { payPeriod, updateDay, resetPayPeriod, nextPayPeriod } = props;
@@ -44,6 +45,7 @@ function Main(props: WithPayPeriodProps) {
 
   return (
     <MainStack>
+      <Countdown />
       <Message quarterHourDifference={quarterHourDifference} />
       <DayList
         days={days}
