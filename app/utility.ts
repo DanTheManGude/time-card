@@ -409,8 +409,7 @@ export function getParsedSavedPayPeriod(): PayPeriod | undefined {
       maybeSavedPayPeriodRaw
     );
 
-    if (parsedSavedPayPeriod.version !== "v1") {
-      debugger;
+    if (parsedSavedPayPeriod.version !== PAY_PERIOD_VERSION) {
       console.warn(
         "Saved pay period version is outdated or invalid, removing saved pay period"
       );
