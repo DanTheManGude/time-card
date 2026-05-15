@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
 
-const lastDay = new Date("2026-08-05T17:00:00-07:00");
+const lastDay = new Date("2026-08-28T17:00:00-07:00");
 const mesageTemplate = "days left.";
 
 export default function Countdown() {
