@@ -11,7 +11,7 @@ export default function Countdown() {
 
   const message = useMemo(() => {
     const timeDifference = lastDay.getTime() - todaysDate.getTime();
-    const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24)) - 1;
     return `${daysDifference} ${mesageTemplate}`;
   }, [todaysDate]);
 
