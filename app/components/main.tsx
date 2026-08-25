@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button, Typography } from "@mui/material";
 import withPayPeriod from "./withPayPeriod";
 import Message from "./Message";
@@ -7,6 +7,8 @@ import MainStack from "./MainStack";
 import NextPayperiod from "./NextPayperiod";
 import DayList from "./DayList";
 import Countdown from "./Countdown";
+import { LAST_DAY } from "../constants";
+import LastDayCelebration from "./LastDayCelebration";
 
 function Main(props: WithPayPeriodProps) {
   const { payPeriod, updateDay, resetPayPeriod, nextPayPeriod } = props;
@@ -34,6 +36,11 @@ function Main(props: WithPayPeriodProps) {
     [updateDay],
   );
 
+  const pastLastDay = useMemo(
+    () => payPeriod.days[0].date > LAST_DAY,
+    [payPeriod],
+  );
+
   if (isPreviewNext && nextPayPeriod) {
     return (
       <NextPayperiod
@@ -46,31 +53,37 @@ function Main(props: WithPayPeriodProps) {
   return (
     <MainStack>
       <Countdown />
-      <Message quarterHourDifference={quarterHourDifference} />
-      <DayList
-        days={days}
-        getUpdateHours={getUpdateDayActuaQuarterlHours}
-        editable={true}
-      />
-      <Button
-        color="info"
-        onClick={previewNextPayPeriod}
-        variant="contained"
-        fullWidth
-        size="large"
-        disabled={!nextPayPeriod}
-      >
-        <Typography>Preview next pay period</Typography>
-      </Button>
+      {pastLastDay ? (
+        <LastDayCelebration />
+      ) : (
+        <>
+          <Message quarterHourDifference={quarterHourDifference} />
+          <DayList
+            days={days}
+            getUpdateHours={getUpdateDayActuaQuarterlHours}
+            editable={true}
+          />
+          <Button
+            color="info"
+            onClick={previewNextPayPeriod}
+            variant="contained"
+            fullWidth
+            size="large"
+            disabled={!nextPayPeriod}
+          >
+            <Typography>Preview next pay period</Typography>
+          </Button>
 
-      <Button
-        color="warning"
-        onClick={resetPayPeriod}
-        variant="outlined"
-        fullWidth
-      >
-        <Typography>Reset</Typography>
-      </Button>
+          <Button
+            color="warning"
+            onClick={resetPayPeriod}
+            variant="outlined"
+            fullWidth
+          >
+            <Typography>Reset</Typography>
+          </Button>
+        </>
+      )}
     </MainStack>
   );
 }
