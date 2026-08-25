@@ -19,16 +19,13 @@ export default function LastDayCelebration() {
           {"Congratualations on making it to the end :)"}
         </Typography>
         <Box
-          component="video"
-          src={"/dog.mp4"}
-          autoPlay
-          loop
-          muted
-          playsInline
+          component="img"
+          src={"/party.gif"}
+          alt="party"
+          zIndex={9000}
           sx={{
             width: "100%",
             height: "auto",
-            borderRadius: 2,
           }}
         />
       </Stack>
