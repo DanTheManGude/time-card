@@ -3,6 +3,8 @@ import MainStack from "./MainStack";
 import Message from "./Message";
 import DayList from "./DayList";
 import Countdown from "./Countdown";
+import { LAST_DAY } from "../constants";
+import { useMemo } from "react";
 
 export default function NextPayperiod({
   viewCurrentPayPeriod,
@@ -13,10 +15,18 @@ export default function NextPayperiod({
 }) {
   const { days, quarterHourDifference } = payPeriod;
 
+  const pastLastDay = useMemo(
+    () => payPeriod.days[0].date > LAST_DAY,
+    [payPeriod],
+  );
+
   return (
     <MainStack>
       <Countdown />
-      <Message quarterHourDifference={quarterHourDifference} />
+
+      {!pastLastDay && (
+        <Message quarterHourDifference={quarterHourDifference} />
+      )}
       <Button
         color="success"
         onClick={viewCurrentPayPeriod}
@@ -26,7 +36,7 @@ export default function NextPayperiod({
       >
         <Typography>View current pay period</Typography>
       </Button>
-      <DayList days={days} editable={false} />
+      {!pastLastDay && <DayList days={days} editable={false} />}
     </MainStack>
   );
 }
