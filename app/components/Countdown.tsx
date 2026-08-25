@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
+import { LAST_DAY } from "../constants";
 
-const lastDay = new Date("2026-08-28T17:00:00-07:00");
 const mesageTemplate = "days left.";
 
 export default function Countdown() {
@@ -10,7 +10,7 @@ export default function Countdown() {
   }, []);
 
   const message = useMemo(() => {
-    const timeDifference = lastDay.getTime() - todaysDate.getTime();
+    const timeDifference = LAST_DAY.getTime() - todaysDate.getTime();
     const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24)) - 1;
     return `${daysDifference} ${mesageTemplate}`;
   }, [todaysDate]);

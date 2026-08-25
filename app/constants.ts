@@ -13,7 +13,7 @@ export const PAY_PERIOD_VERSION: PayPeriodVersion = "v1";
 
 export const convertHoursToQuarterHours = (
   hours: number,
-  quarterHours: number = 0
+  quarterHours: number = 0,
 ) => hours * 4 + quarterHours;
 
 export const NORMAL_ESTIMATED_QUARTER_HOURS = convertHoursToQuarterHours(8, 2);
@@ -55,7 +55,9 @@ export const weekDayTimePriority = [
   THURSDAY,
 ].reduce<{ [key: number]: number }>(
   (acc, weekDay, index) => ({ ...acc, [weekDay]: index }),
-  {}
+  {},
 );
 
 export const LAST_DATE_OF_PAY_PERIOD = 15;
+
+export const LAST_DAY = new Date("2026-08-28T17:00:00-07:00");
