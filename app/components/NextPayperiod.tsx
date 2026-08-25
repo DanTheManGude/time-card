@@ -5,6 +5,7 @@ import DayList from "./DayList";
 import Countdown from "./Countdown";
 import { LAST_DAY } from "../constants";
 import { useMemo } from "react";
+import LastDayCelebration from "./LastDayCelebration";
 
 export default function NextPayperiod({
   viewCurrentPayPeriod,
@@ -23,7 +24,6 @@ export default function NextPayperiod({
   return (
     <MainStack>
       <Countdown />
-
       {!pastLastDay && (
         <Message quarterHourDifference={quarterHourDifference} />
       )}
@@ -37,6 +37,7 @@ export default function NextPayperiod({
         <Typography>View current pay period</Typography>
       </Button>
       {!pastLastDay && <DayList days={days} editable={false} />}
+      {pastLastDay && <LastDayCelebration />}
     </MainStack>
   );
 }
