@@ -2,6 +2,7 @@ import { Button, Typography } from "@mui/material";
 import MainStack from "./MainStack";
 import Message from "./Message";
 import DayList from "./DayList";
+import Countdown from "./Countdown";
 
 export default function NextPayperiod({
   viewCurrentPayPeriod,
@@ -14,6 +15,7 @@ export default function NextPayperiod({
 
   return (
     <MainStack>
+      <Countdown />
       <Message quarterHourDifference={quarterHourDifference} />
       <Button
         color="success"

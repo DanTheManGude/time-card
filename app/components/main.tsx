@@ -28,10 +28,10 @@ function Main(props: WithPayPeriodProps) {
           ...existingDay,
           actualQuarterHours: newActualQuarterHours,
         }),
-        index
+        index,
       );
     },
-    [updateDay]
+    [updateDay],
   );
 
   if (isPreviewNext && nextPayPeriod) {
